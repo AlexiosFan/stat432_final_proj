@@ -26,9 +26,13 @@ library(MASS)
 ## Data Load
 
 ```{r}
-load("/Users/melchizedek/Library/CloudStorage/OneDrive-HKUSTConnect/STAT/STAT432/Final_Proj/MyData.RData")
-load("/Users/melchizedek/Library/CloudStorage/OneDrive-HKUSTConnect/STAT/STAT432/Final_Proj/users.RData")
-
+if (!require('this.path')) install.packages('this.path')
+library(devtools)
+library(this.path)
+cur_dir2 = dirname(this.path())
+cur_dir2
+load(paste(cur_dir2, "/MyData.RData", sep = ""))
+load(paste(cur_dir2, "/users.RData", sep = ""))
 my_data <- train_1
 ```
 
@@ -58,8 +62,11 @@ plot(pca, type = "l")
 ```
 
 ```{r}
+```
+
+```{r}
 # lm 
-lm_model <- lm(train[,1] ~0+ ., data = data.frame(train[,2:4]))
+lm_model <- lm(train[,1] ~0+ ., data = data.frame(train[,-1]))
 summary(lm_model)
 ```
 
@@ -130,11 +137,5 @@ summary(lm_model)
 n = 3
 umap_result <- umap(crossing, n_neighbors = 16, n_components = 4, metric = "euclidean")
 plot(umap_result$layout, col = train[,1])
-```
-
-```{r}
-```
-
-```{r}
 ```
 

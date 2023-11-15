@@ -6,16 +6,17 @@ output:
 ---
 
 ```{r}
-setwd("C:\\Users\\Serena\\Desktop\\Data - STAT 432 Final project")
-train_logs <- fread("C:\\Users\\Serena\\Desktop\\Data - STAT 432 Final project\\train_logs.csv")
-test_logs <- fread("C:\\Users\\Serena\\Desktop\\Data - STAT 432 Final project\\test_logs.csv")
-train_scores <- fread("C:\\Users\\Serena\\Desktop\\Data - STAT 432 Final project\\train_scores.csv")
-sample_submission = fread("C:\\Users\\Serena\\Desktop\\Data - STAT 432 Final project\\train_scores.csv")
+if (!require('this.path')) install.packages('this.path')
+library(devtools)
+library(this.path)
+library(data.table)
+cur_dir2 = dirname(this.path())
+setwd(cur_dir2)
+train_logs <- fread(paste(cur_dir2, "/train_logs.csv", sep = ""))
+train_scores <- fread(paste(cur_dir2, "/train_scores.csv", sep = ""))
 
 head(train_logs)
-head(test_logs)
 head(train_scores)
-head(sample_submission)
 ```
 
 ```{r}

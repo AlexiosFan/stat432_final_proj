@@ -44,7 +44,7 @@ for(i in 1: length(users)){ # 1){ #
     change = rep(0, length(acticity)-1)
 
     for(j in 1:(length(acticity)-1)){
-        change[j] = !(user_logs$activity[j+1] == user_logs$activity[j])
+        change[j] = (user_logs$activity[j+1] != user_logs$activity[j])
     }
 
     for(j in 1:(length(acticity)-1)){
