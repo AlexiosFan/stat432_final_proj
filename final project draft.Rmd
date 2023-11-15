@@ -1,0 +1,94 @@
+---
+title: "final project draft"
+output:
+  pdf_document: default
+  html_notebook: default
+---
+
+```{r}
+setwd("C:\\Users\\Serena\\Desktop\\Data - STAT 432 Final project")
+train_logs <- fread("C:\\Users\\Serena\\Desktop\\Data - STAT 432 Final project\\train_logs.csv")
+test_logs <- fread("C:\\Users\\Serena\\Desktop\\Data - STAT 432 Final project\\test_logs.csv")
+train_scores <- fread("C:\\Users\\Serena\\Desktop\\Data - STAT 432 Final project\\train_scores.csv")
+sample_submission = fread("C:\\Users\\Serena\\Desktop\\Data - STAT 432 Final project\\train_scores.csv")
+
+head(train_logs)
+head(test_logs)
+head(train_scores)
+head(sample_submission)
+```
+
+```{r}
+library(data.table)
+library(dplyr)
+train_data <- merge(train_logs, train_scores, by = "id")
+set.seed(123)
+training_indices <- sample(nrow(train_data), 0.8 * nrow(train_data))
+training_set <- train_data[training_indices, ]
+#transforms this categorical variable into a format that is suitable for modeling, creating binary variables for each category.
+training_set$activity_input <- as.integer(training_set$activity == "Input")
+training_set$activity_nonproduction <- as.integer(training_set$activity == "Nonproduction")
+training_set$activity_remove_cut <- as.integer(training_set$activity == "Remove/Cut")
+training_set$activity_paste <- as.integer(training_set$activity == "Paste")
+training_set$activity_replace <- as.integer(training_set$activity == "Replace")
+training_set$activity_move <- as.integer(grepl("Move From", training_set$activity))
+
+event_types <- unique(c(train_data$down_event, train_data$up_event))
+
+for (event_type in event_types) {
+  training_set[[paste0("down_event_", event_type)]] <- as.integer(training_set$down_event == event_type)
+  training_set[[paste0("up_event_", event_type)]] <- as.integer(training_set$up_event == event_type)
+}
+
+training_set$num_chars_changed <- nchar(as.character(training_set$text_change))
+
+
+user_data <- training_set %>%
+  group_by(id) %>%
+  summarise(mean_down_time = mean(down_time, na.rm = TRUE),
+            mean_up_time = mean(up_time, na.rm = TRUE),
+            mean_action_time = mean(action_time, na.rm = TRUE),
+            # Other aggregations
+            score = mean(score, na.rm = TRUE))
+
+#Linear Regression Model?
+library(caret)
+
+# 'score' is the target variable?
+train_control <- trainControl(method = "cv", number = 10)
+model <- train(score ~ ., data = user_data, method = "lm", trControl = train_control)
+
+
+# Summary of the training set
+summary(user_data)
+
+hist(user_data$mean_down_time)
+
+boxplot(user_data$mean_down_time)
+
+#sample_submission$score <- predictions
+#write.csv(sample_submission, file = "final_submission.csv", row.names = FALSE)
+
+```
+
+Merging train_logs with train_scores:
+
+
+Random Selection of 80% of Observations for Training:
+
+
+One-Hot Encoding of activity:
+
+The activity variable categorizes the type of action performed by the user (like Input, Nonproduction, etc.). One-hot encoding transforms this categorical variable into a format that is suitable for modeling, creating binary variables for each category. This encoding helps in capturing the impact of each type of activity on the target variable (e.g., score).
+
+Handling down_event and up_event:
+
+These variables represent specific actions (key/mouse press and release). By counting the frequency of different types of events, we create features that reflect the user's interaction style with the interface. For example, frequent use of certain keys or commands might be indicative of a user's proficiency or specific working habits.
+
+Processing text_change:
+
+This variable captures the actual change in the text. By counting the number of characters changed, we create a quantifiable measure of the extent of text modifications. This could be indicative of the amount of editing or content generation done by the user.
+
+Aggregating Data by User:
+
+The final step is to condense the log data into a single row per user. This involves calculating summary statistics (like mean, sum) for the features derived in the previous steps. The goal is to create a user-level profile from the log data, summarizing their overall behavior and activity patterns. This profile is then used for further analysis or modeling, such as predicting the score.
