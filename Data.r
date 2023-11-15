@@ -44,7 +44,7 @@ for(i in 1: length(users)){ # 1){ #
     change = rep(0, length(acticity)-1)
 
     for(j in 1:(length(acticity)-1)){
-        change = !(user_logs$activity[j+1] == user_logs$activity[j])
+        change[j] = !(user_logs$activity[j+1] == user_logs$activity[j])
     }
 
     for(j in 1:(length(acticity)-1)){
@@ -70,7 +70,7 @@ for(i in 1: length(users)){ # 1){ #
     train_1[i,8] <- as.numeric(present_of_MoveFromTo)
     train_1[i,9] <- as.numeric(tuning_of_action_time)
     train_1[i,10] <- as.numeric(mean(tuning_time_space))
-    train_1[i, 11] <- as.numeric(change)
+    train_1[i, 11] <- as.numeric(sum(change)/length(change))
     train_1[i, 12] <- as.numeric(word_time_ratio)
     train_1[i, 13] <- as.numeric(word_event_ratio)
     train_1[i, 14] <- as.numeric(event_time_ratio)
