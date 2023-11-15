@@ -12,9 +12,9 @@ train_scores <-read.csv(paste(cur_dir2, "/train_score.csv", sep = ""))
 users <- unique(train_logs$id)
 length(users)
 
-
-train_1 <- matrix(0, nrow = length(users), ncol = 11)
-colnames(train_1) <- c("id","Score", "present_of_Nonproduction", "present_of_Input", "present_of_RemoveCut", "present_of_Paste", "present_of_Replace", "present_of_MoveFromTo", "tuning_of_down_time", "tuning_of_up_time", "tuning_of_action_time")
+names <- c("id","Score", "present_of_Nonproduction", "present_of_Input", "present_of_RemoveCut", "present_of_Paste", "present_of_Replace", "present_of_MoveFromTo",  "tuning_of_action_time", "tuning_value")
+train_1 <- matrix(0, nrow = length(users), ncol = length(names))
+colnames(train_1) <- names
 
 for(i in 1: length(users)){ # 1){ #
 
@@ -39,9 +39,11 @@ for(i in 1: length(users)){ # 1){ #
     present_of_Replace = num_of_Replace / length(user_logs$activity)
     present_of_MoveFromTo = num_of_MoveFromTo / length(user_logs$activity)
 
-    tuning_of_down_time = var(user_logs$down_time[user_logs$activity == "Input"])
-    tuning_of_up_time = var(user_logs$up_time[user_logs$activity == "Input"])
     tuning_of_action_time = var(user_logs$action_time[user_logs$activity == "Input"])
+    tuning_s = rep(0,length(acticity))
+    for(j in 1:(length(acticity)-1)){
+        tuning_value[j] = train_logs$down_time[j+1] - train_logs$up_time[j]
+    }
 
     train_1[i,2] <- as.numeric(train_scores[train_scores$id == user,2])
     train_1[i,3] <- as.numeric(present_of_Nonproduction)
@@ -50,9 +52,7 @@ for(i in 1: length(users)){ # 1){ #
     train_1[i,6] <- as.numeric(present_of_Paste)
     train_1[i,7] <- as.numeric(present_of_Replace)
     train_1[i,8] <- as.numeric(present_of_MoveFromTo)
-    train_1[i,9] <- as.numeric(tuning_of_down_time)
-    train_1[i,10] <- as.numeric(tuning_of_up_time)
-    train_1[i,11] <- as.numeric(tuning_of_action_time)
+    train_1[i,9] <- as.numeric(tuning_of_action_time)
 }
 
 print(colnames(train_1))
