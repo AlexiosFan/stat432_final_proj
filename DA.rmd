@@ -1,0 +1,140 @@
+---
+title: "Final Project Data Analysis"
+author: "Ruiming"
+output: 
+  pdf_document:
+    keep_tex: true
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Library
+
+```{r}
+library(glmnet)
+library(e1071)
+library(umap)
+library(randomForest)
+library(MASS)
+```
+
+## Data Load
+
+```{r}
+load("/Users/melchizedek/Library/CloudStorage/OneDrive-HKUSTConnect/STAT/STAT432/Final_Proj/MyData.RData")
+load("/Users/melchizedek/Library/CloudStorage/OneDrive-HKUSTConnect/STAT/STAT432/Final_Proj/users.RData")
+
+my_data <- train_1
+```
+
+## Data Spliting
+
+```{r}
+set.seed(432)
+train_index <- sample(1:nrow(my_data), 0.8*nrow(my_data))
+train <- as.matrix(my_data[train_index,2:ncol(my_data)])
+test <-  as.matrix(my_data[-train_index,2:ncol(my_data)])
+
+# make data into numeric
+train <- matrix(as.numeric(apply(train, c(1, 2), as.numeric)), nrow = nrow(train), ncol = ncol(train))
+colnames(train) <- colnames(my_data)[2:ncol(my_data)]
+test <- matrix(as.numeric(apply(test, c(1, 2), as.numeric)), nrow = nrow(test), ncol = ncol(test))
+colnames(test) <- colnames(my_data)[2:ncol(my_data)]
+```
+
+## Data Preprocessing
+
+
+```{r}
+#PCA
+pca <- prcomp(train[,-1], center = TRUE, scale. = TRUE)
+# plot the variables importance
+plot(pca, type = "l")
+```
+
+```{r}
+# lm 
+lm_model <- lm(train[,1] ~0+ ., data = data.frame(train[,2:4]))
+summary(lm_model)
+```
+
+```{r}
+# lasso
+
+lasso_model <- cv.glmnet(train[,-1], train[,1], alpha = 1, family = "binomial", nfolds = 15)
+plot(lasso_model)
+coef(lasso_model, s = "lambda.min")
+coef(lasso_model, s = "lambda.1se")
+summary(lasso_model)
+```
+
+```{r}
+# UMAP
+umap_result <- umap(train[,-1], n_neighbors = 10, n_components = 4, metric = "euclidean")
+plot(umap_result$layout, col = train[,1])
+```
+
+```{r}
+# ramdom forest
+
+rf_model <- randomForest(as.factor(train[,1]) ~ ., data = data.frame(train[,-1]))
+rf_model
+
+# predict error
+pred <- predict(rf_model, newdata = data.frame(test[,-1]))
+mean((pred - test[,1])^2)
+
+#confusion matrix
+table(pred, test[,1])
+```
+
+```{r}
+# LDA for 12 classes
+lda_model <- lda(train[,1] ~ ., data = data.frame(train[,-1]))
+lda_model
+# confusion matrix
+pred <- predict(lda_model, newdata = data.frame(test[,-1]))
+table(pred$class, test[,1])
+```
+
+```{r}
+# crossing variable 
+cross_terms_rowwise <- function(row) {
+  combn(row, 2, FUN = function(x) x[1] * x[2])
+}
+
+# 应用这个函数到每一行
+crossing <- t(apply(train[,-1], 1, cross_terms_rowwise))
+
+
+
+# PCA
+pca <- prcomp(crossing, center = TRUE, scale. = TRUE)
+# plot the variables importance
+plot(pca, type = "l")
+```
+
+```{r}
+# lm
+lm_model <- lm(train[,1] ~0+ ., data = data.frame(crossing))
+summary(lm_model)
+```
+
+```{r}
+# umap
+n = 3
+umap_result <- umap(crossing, n_neighbors = 16, n_components = 4, metric = "euclidean")
+plot(umap_result$layout, col = train[,1])
+```
+
+```{r}
+```
+
+```{r}
+```
+
