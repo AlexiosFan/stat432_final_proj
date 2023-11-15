@@ -40,9 +40,10 @@ for(i in 1: length(users)){ # 1){ #
     present_of_MoveFromTo = num_of_MoveFromTo / length(user_logs$activity)
 
     tuning_of_action_time = var(user_logs$action_time[user_logs$activity == "Input"])
-    tuning_s = rep(0,length(acticity))
+    tuning_time_space = rep(0, length(acticity)-1)
+
     for(j in 1:(length(acticity)-1)){
-        tuning_value[j] = train_logs$down_time[j+1] - train_logs$up_time[j]
+        tuning_time_space = user_logs$down_time[j+1] - user_logs$up_time[j]
     }
 
     train_1[i,2] <- as.numeric(train_scores[train_scores$id == user,2])
@@ -53,6 +54,7 @@ for(i in 1: length(users)){ # 1){ #
     train_1[i,7] <- as.numeric(present_of_Replace)
     train_1[i,8] <- as.numeric(present_of_MoveFromTo)
     train_1[i,9] <- as.numeric(tuning_of_action_time)
+    train_1[i,10] <- as.numeric(mean(tuning_time_space))
 }
 
 print(colnames(train_1))
