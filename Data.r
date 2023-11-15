@@ -41,6 +41,11 @@ for(i in 1: length(users)){ # 1){ #
 
     tuning_of_action_time = var(user_logs$action_time[user_logs$activity == "Input"])
     tuning_time_space = rep(0, length(acticity)-1)
+    change = rep(0, length(acticity)-1)
+
+    for(j in 1:(length(acticity)-1)){
+        change = !(user_logs$activity[j+1] == user_logs$activity[j])
+    }
 
     for(j in 1:(length(acticity)-1)){
         tuning_time_space = user_logs$down_time[j+1] - user_logs$up_time[j]
