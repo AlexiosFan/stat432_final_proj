@@ -12,7 +12,7 @@ train_scores <-read.csv(paste(cur_dir2, "/train_scores.csv", sep = ""))
 users <- unique(train_logs$id)
 length(users)
 
-names <- c("id","Score", "present_of_Nonproduction", "present_of_Input", "present_of_RemoveCut", "present_of_Paste", "present_of_Replace", "present_of_MoveFromTo",  "tuning_of_action_time", "tuning_value")
+names <- c("id","Score", "present_of_Nonproduction", "present_of_Input", "present_of_RemoveCut", "present_of_Paste", "present_of_Replace", "present_of_MoveFromTo",  "tuning_of_action_time", "tuning_space_time", "Change", "word_time_ratio", "word_event_ratio","event_time_ratio","idle_time_ratio")
 train_1 <- matrix(0, nrow = length(users), ncol = length(names))
 colnames(train_1) <- names
 
