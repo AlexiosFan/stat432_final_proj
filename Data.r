@@ -5,7 +5,7 @@ cur_dir2 = dirname(this.path())
 cur_dir2
 ## Data
 train_logs <-read.csv(paste(cur_dir2, "/train_logs.csv", sep = ""))
-train_scores <-read.csv(paste(cur_dir2, "/train_score.csv", sep = ""))
+train_scores <-read.csv(paste(cur_dir2, "/train_scores.csv", sep = ""))
 
 
 ## Processing
