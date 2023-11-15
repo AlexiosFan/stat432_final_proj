@@ -1,7 +1,11 @@
+if (!require('this.path')) install.packages('this.path')
 library(devtools)
+library(this.path)
+cur_dir2 = dirname(this.path())
+cur_dir2
 ## Data
-train_logs <-read.csv("/Users/melchizedek/Library/CloudStorage/OneDrive-HKUSTConnect/STAT/STAT432/Final_Proj/train_logs.csv")
-train_scores <-read.csv("/Users/melchizedek/Library/CloudStorage/OneDrive-HKUSTConnect/STAT/STAT432/Final_Proj/train_scores.csv")
+train_logs <-read.csv(paste(cur_dir2, "/train_logs.csv", sep = ""))
+train_scores <-read.csv(paste(cur_dir2, "/train_score.csv", sep = ""))
 
 
 ## Processing
@@ -53,5 +57,5 @@ for(i in 1: length(users)){ # 1){ #
 
 print(colnames(train_1))
 
-save(train_1, file = "/Users/melchizedek/Library/CloudStorage/OneDrive-HKUSTConnect/STAT/STAT432/Final_Proj/MyData.RData")
-save(users, file = "/Users/melchizedek/Library/CloudStorage/OneDrive-HKUSTConnect/STAT/STAT432/Final_Proj/users.RData")
+save(train_1, file = paste(cur_dir2, "/MyData.RData", sep = ""))
+save(users, file = paste(cur_dir2, "/users.RData", sep = ""))
