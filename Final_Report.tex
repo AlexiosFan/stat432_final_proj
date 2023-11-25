@@ -91,11 +91,52 @@ grow horizontally in a level-wise fashion. The author tuned the model manually a
 
 \section{Regression/Classification Models}
 
-\subsection{Regression Model 1: *}
+\subsection{Regression Model 1: Linear Regression with ridge/lasso penalty}
+Since we have learnt from the Kaggle discussion that the linear regression models are not really effective for this dataset, 
+we consider a penalty and see if it leads to a good performance. 
+We start with raw Ridge and LASSO regression models. Using the \texttt{glmnet} package with 10-fold cross validation, 
+we get the $R^2 \approx 0.34$ for both Ridge and LASSO regression when predicting with \texttt{lambda.min}. 
+This is not a good result, so we try the elastic net and lambda values for tuning. 
+\paragraph{Elastic Net}
+The elastic net is a combination of the Ridge and LASSO regression as shown in the lecture. 
+The related tuning parameter is $\alpha$, which decides the proportion of the two penalties. 
+In this setting, we iterate all $\alpha \in [0, 1]$ with 0.01 increments. 
+In additional, we use the default lambda sequences for each $\alpha$. 
+The tuning result is shown in \hyperref[fig:elastic_net]{Figure 2}.
+\begin{figure}[H]
+    \centering
+    \includegraphics*[scale=0.25]{figures/elastic_net.png}
+    \caption{Elastic Net: Tuning $\alpha$}
+    \label{fig:elastic_net}
+\end{figure}
+It is clear that the LASSO penalty $\alpha = 1$ does not really help with the prediction.
+The best $R^2$ is reached with the pure Ridge model. However, the difference is not significant, 
+because of the fact that the linear assumption may not hold for this dataset.
+\paragraph{Tuning Lambda}
+The default lambda sequence may not be the best choice for our dataset.
+Thus, we use a grid of lambda with exponential growth to find 
+if a large penalty can influence the prediction. The lambda grid we use is 
+\begin{align*}
+    \texttt{lambda} = \texttt{exp(seq(-5, 5, 0.05))}
+\end{align*}
+The average tuning result with 100 simulations is shown in \hyperref[fig:lambda]{Figure 3}.
+\begin{figure}[H]
+    \centering
+    \includegraphics*[scale=0.25]{figures/lambda.png}
+    \caption{Ridge: Tuning $\lambda$}
+\label{fig:lambda}
+\end{figure}
+Unexpectedly, the best $R^2$ is reached with the smallest lambda. 
+It indicates that the Ridge penalty cannot help with the prediction, either. 
+The interpretation of the bad fitting of linear regression model still lies in the absence of linear patterns in the data.
+Even though Ridge penalty helps to resolve high multicollinearity and LASSO penalty 
+helps to select features, they cannot help with the prediction without the linear assumption.
 
 \subsection{Regression Model 2: *}
 
-\subsection{Regression Model 3: *}
+\subsection{Regression Model 3: LightBGM}
+This model is inspired by ZhengHeng's method as presented in the literature review.
+To recap the method, it 
 
 \subsection{Classification Model: Random Forest}
 For classification, we choose the random forest model using the R package \texttt{randomForest}.

@@ -75,5 +75,3 @@ filled.contour(mtrys, nodesizes, accuracy_with_tolerace_mat, color.palette = hea
  plot.title = title(main = "Accuracy with tolerance", 
                                   xlab = "mtry", ylab = "nodesize"))
 dev.off()
-
-importance(rf)
