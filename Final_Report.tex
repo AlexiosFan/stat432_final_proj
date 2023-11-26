@@ -1,4 +1,4 @@
-\documentclass{article}
+\documentclass[12pt]{article}
 \usepackage{amssymb}
 \usepackage{babel}
 \usepackage{geometry}
@@ -77,9 +77,27 @@ This newly developed model grows tree vertically in a leaf-wise fashion, while t
 grow horizontally in a level-wise fashion. The author tuned the model manually and publish the best parameters. 
 % Decide if we want to use this regressor?
 
+\subsection{Feature Engineering}
+\href{https://www.kaggle.com/code/hiarsl/feature-engineering-sentence-paragraph-features}{Feature Engineering Sentence and Pargraph Feature} by Matthias Hauser
+give us a detailed description of feature engineering based on the nature of train dataset and also the mean importance of its variables. Based on the author's feature engineering,
+the author improved his score to 0.586 and ranked 54th on the leaderboard. Also, this post got a gold medal in the notebook competition. As one of the highest ranked notebooks, 
+his work is very valuable and worth learning from. There are also many discussions about this notebook, which is shown in this \href{https://www.kaggle.com/code/hiarsl/feature-engineering-sentence-paragraph-features/comments}{discussion}.
+
+Matthias Hauser's work could be summarized into three groups, which are \textbf{sentence features, paragraph features and other features}. 
+For sentence features, the author used the average length of sentences, number of sentences and so on. 
+For paragraph features, the author used the average length of paragraphs, the length of first paragraph, number of paragraphs and so on.
+For other features, the author used the average length of words, the number of words, pause time, and so on.
+These features are very useful and meaningful, which could be used in our project. Moreover, the author's work give us a good implementation of feature engineering.
+
+Futher more, the author also gave us the mean importance of his variables. The graph is shown in the end of his post \href{https://www.kaggle.com/code/hiarsl/feature-engineering-sentence-paragraph-features/notebook}{his post}.
+The importance of his variables shows that the importance of his variables are very close to our nature knowledge. Some of the most important variable are the length of words, pause time, and sentence length, which are also the standard by which we judge a person’s writing level in life.
+Based on his work, we could do more feature engineering like delete ratio, text change ratio, and paragraph balance, to improve our score.
+
+
+
 
 \section{Data processing}
-
+https://www.kaggle.com/code/ravi20076/writingquality-baseline-models?rvi=1
 
 \section{Unsupervised Learning}
 
