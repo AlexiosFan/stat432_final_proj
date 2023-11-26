@@ -12,9 +12,83 @@ length(users)
 # model (0 for whole set and save the data, 1 for whole set but not save the data, 2 for only the first user and not save the data)
 model = 2
 length_of_loop = length(users)
-if(model == 2) length_of_loop = 1
+if(model == 2) {
+    length_of_loop = 1
+    i = 1
+}
 
 ## Processing
+
+# helper function
+# input text processing
+extractNumbers <- function(text) {
+  # Regular expression to match numbers
+  matches <- gregexpr("\\d+", text)
+  numbers <- regmatches(text, matches)[[1]]
+  numbers <- as.numeric(numbers) # Convert to numeric
+  return(numbers)
+}
+
+processingInputs <- function(currTextInput) {
+  essayText <- ""
+
+  for (k in 1:nrow(currTextInput)) {
+    Input <- currTextInput[k, ]
+    activity <- as.character(Input[1])
+    cursor_position <- as.numeric(Input[2])
+    text_change <- as.character(Input[3])
+
+    if (activity == "Replace") {
+      replaceTxt <- unlist(strsplit(text_change, " => "))
+      before <- replaceTxt[1]
+      after <- replaceTxt[2]
+      essayText <- paste0(substr(essayText, 1, cursor_position - nchar(after)), 
+                          after, 
+                          substr(essayText, cursor_position + nchar(before) - nchar(after) + 1, nchar(essayText)))
+    } else if (activity == "Paste") {
+      essayText <- paste0(substr(essayText, 1, cursor_position - nchar(text_change)), 
+                          text_change, 
+                          substr(essayText, cursor_position - nchar(text_change) + 1, nchar(essayText)))
+    } else if (activity == "Remove/Cut") {
+      essayText <- paste0(substr(essayText, 1, cursor_position), 
+                          substr(essayText, cursor_position + nchar(text_change) + 1, nchar(essayText)))
+    } else if (grepl("Move From", activity)) {
+      moveData <- extractNumbers(activity)
+      if (moveData[1] != moveData[3]) {
+        if (moveData[1] < moveData[3]) {
+          movingText <- substr(essayText, moveData[1], moveData[2])
+          essayText <- paste0(substr(essayText, 1, moveData[1] - 1), 
+                              substr(essayText, moveData[2] + 1, moveData[3]), 
+                              movingText, 
+                              substr(essayText, moveData[3] + 1, nchar(essayText)))
+        } else {
+          movingText <- substr(essayText, moveData[1], moveData[2])
+          essayText <- paste0(substr(essayText, 1, moveData[3] - 1), 
+                              movingText, 
+                              substr(essayText, moveData[3], moveData[1] - 1), 
+                              substr(essayText, moveData[2] + 1, nchar(essayText)))
+        }
+      }
+    } else if (activity == "Input") {
+      # Assuming 'input' activity
+      if(cursor_position == 1){
+        essayText <- paste0(text_change, essayText)
+      } else if(cursor_position == nchar(essayText) + 1){
+        essayText <- paste0(essayText, text_change)
+      } else {
+        essayText <- paste0(substr(essayText, 1, cursor_position - 1), 
+                            text_change, 
+                            substr(essayText, cursor_position, nchar(essayText)))
+      }
+    }else{
+        # Assuming 'Nonproduction' activity
+        essayText <- essayText
+    }
+  }
+  return(essayText)
+}
+
+
 
 # the names of variables
 names_of_variables <- c("id","Score", "present_of_Nonproduction", "present_of_Input", "present_of_RemoveCut", "present_of_Paste", "present_of_Replace", "present_of_MoveFromTo",  
@@ -79,20 +153,16 @@ for(i in 1: length_of_loop){
     idle_time_ratio = action_time_gap_sum / up_time_max
 
     # tuning sentence length
-    num_sentence <- length(user_logs$activity[user_logs$up_event == '.']) - length(user_logs$activity[user_logs$up_event == 'Backspace' & user_logs$text_change == '.' ])
-    sentence_length <- rep(0, num_sentence)
-    count <- 1
-    sum_of_pre_word <- 0
-    for(i in 1:length(user_logs$activity)){
-        if(user_logs$up_event[i] == '.'){
-            sentence_length[count] = user_logs$word_count[i] - sum_of_pre_word
-            sum_of_pre_word = sum_of_pre_word + sentence_length[count]
-            count = count + 1
-        }
-        if(user_logs$up_event[i] == 'Backspace' & user_logs$text_change[i] == '.' ){
-            count = count - 1
-            sum_of_pre_word = sum_of_pre_word - sentence_length[count]
-        }
+    currTextInput <- user_logs[c("activity", "cursor_position", "text_change")]
+    essayText <- processingInputs(currTextInput)
+    length_of_text <- nchar(essayText)
+    
+    # number of sentences
+    num_of_sentence = length(gregexpr("[.!?]", essayText)[[1]])
+    sentence_length <- rep(0, num_of_sentence)
+    sentence_length[1] <- gregexpr("[.!?]", essayText)[[1]][1]
+    for(j in 2:num_of_sentence){
+        sentence_length[j] <- gregexpr("[.!?]", essayText)[[1]][j] - gregexpr("[.!?]", essayText)[[1]][j-1]
     }
 
 
@@ -106,12 +176,13 @@ for(i in 1: length_of_loop){
     MyDataSet[i,7] <- as.numeric(present_of_Replace)
     MyDataSet[i,8] <- as.numeric(present_of_MoveFromTo)
     MyDataSet[i,9] <- as.numeric(tuning_of_action_time)
-    MyDataSet[i,10] <- as.numeric(mean(tuning_time_space))
-    MyDataSet[i, 11] <- as.numeric(sum(fluquence_of_change)/length(fluquence_of_change))
-    MyDataSet[i, 12] <- as.numeric(word_time_ratio)
-    MyDataSet[i, 13] <- as.numeric(word_event_ratio)
-    MyDataSet[i, 14] <- as.numeric(event_time_ratio)
-    MyDataSet[i, 15] <- as.numeric(idle_time_ratio)
+    MyDataSet[i,10] <- as.numeric(mean(tuning_time_space)) # tuning_time_space
+    MyDataSet[i, 11] <- as.numeric(sum(fluquence_of_change)/length(fluquence_of_change)) #`fluquence_of_change
+    MyDataSet[i, 12] <- as.numeric(word_time_ratio) #`word_time_ratio
+    MyDataSet[i, 13] <- as.numeric(word_event_ratio) #`word_event_ratio
+    MyDataSet[i, 14] <- as.numeric(event_time_ratio) # tuning event time
+    MyDataSet[i, 15] <- as.numeric(idle_time_ratio) # tuning idle time
+    MyDataSet[i, 16] <- as.numeric(mean(sentence_length)) # tuning sentence length
 
     if(i == 1) {
         # first user's data
