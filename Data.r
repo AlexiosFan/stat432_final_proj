@@ -198,7 +198,7 @@ for(k in 1 : length_of_loop){
     word_count_max = max(user_logs$word_count)
     event_id_max = max(user_logs$event_id)
     up_time_max = max(user_logs$up_time)
-    action_time_gap_sum = sum(tuning_time_space)
+    action_time_gap_sum = sum(time_space)
     word_time_ratio = word_count_max / up_time_max
     word_event_ratio = word_count_max / event_id_max
     event_time_ratio = event_id_max  / up_time_max
