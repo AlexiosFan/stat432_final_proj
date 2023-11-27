@@ -1,8 +1,11 @@
 if (!require('this.path')) install.packages('this.path')
 if (!require('devtools')) install.packages('devtools')
+if (!require('randomForest')) install.packages('randomForest')  
 
 library(devtools)
 library(this.path)
+library(randomForest)
+
 cur_dir2 = dirname(this.path())
 cur_dir2
 # Data
@@ -11,17 +14,17 @@ train_scores <-read.csv(paste(cur_dir2, "/train_scores.csv", sep = ""))
 users <- unique(train_logs$id)
 length(users)
 
-# model (0 for whole set and save the data, 1 for whole set but not save the data, 2 for only the first user and not save the data)
+# model (0 for whole set and save the data, 1 for whole set but not save the data, 2 for only the first user and not save the data, 3 for only the first user and save the data)
 model = 0
 length_of_loop = length(users)
 first = 0
-if(model == 2) {
-    length_of_loop = 1
+if(model == 2 || model == 3) {
+    length_of_loop = 10
     i = 1
     # frist be a random user
     first = sample(1:length(users), 1)
-    length_of_loop = 1
 }
+
 
 ## Processing
 
@@ -139,8 +142,8 @@ calculateParagraphCount <- function(text) {
 
 # the names of variables
 names_of_variables <- c("id","Score", "present_of_Nonproduction", "present_of_Input", "present_of_RemoveCut", "present_of_Paste", "present_of_Replace", "present_of_MoveFromTo",  
-                "tuning_of_action_time", "tuning_space_time", "fluquence_of_change", "word_time_ratio", "word_event_ratio","event_time_ratio","idle_time_ratio","tuning_sentence_length", "num_of_sentence"
-                , "tuning_word_length", "num_of_words", "num_of_paragraphs")
+                "mean_of_action_time", "variance_of_action_time", "mean_space_time","variance_space_time", "fluquence_of_change", "word_time_ratio", "word_event_ratio","event_time_ratio","idle_time_ratio",
+                "mean_sentence_length","variance_sentence_length", "num_of_sentence", "mean_word_length" ,"variance_word_length", "num_of_words", "num_of_paragraphs")
 MyDataSet <- matrix(0, nrow = length_of_loop, ncol = length(names_of_variables))
 colnames(MyDataSet) <- names_of_variables
 
@@ -173,13 +176,13 @@ for(k in 1 : length_of_loop){
 
 
     # tuning varible of action time
-    tuning_of_action_time = var(user_logs$action_time[user_logs$activity == "Input"])
+    action_time = user_logs$action_time[user_logs$activity == "Input"]
 
     # tuning vrailve of spacing time 
-    tuning_time_space = rep(0, length(user_logs$activity)-1)
+    time_space = rep(0, length(user_logs$activity)-1)
 
     for(j in 1:(length(user_logs$activity)-1)){
-        tuning_time_space = user_logs$down_time[j+1] - user_logs$up_time[j]
+        time_space[j] = user_logs$down_time[j+1] - user_logs$up_time[j]
     }
 
     # the fluquence of change inputs
@@ -231,19 +234,22 @@ for(k in 1 : length_of_loop){
     MyDataSet[k,6] <- as.numeric(present_of_Paste)
     MyDataSet[k,7] <- as.numeric(present_of_Replace)
     MyDataSet[k,8] <- as.numeric(present_of_MoveFromTo)
-    MyDataSet[k,9] <- as.numeric(tuning_of_action_time)
-    MyDataSet[k,10] <- as.numeric(mean(tuning_time_space)) # tuning_time_space
-    MyDataSet[k, 11] <- as.numeric(sum(fluquence_of_change)/length(fluquence_of_change)) #`fluquence_of_change
-    MyDataSet[k, 12] <- as.numeric(word_time_ratio) #`word_time_ratio
-    MyDataSet[k, 13] <- as.numeric(word_event_ratio) #`word_event_ratio
-    MyDataSet[k, 14] <- as.numeric(event_time_ratio) # tuning event time
-    MyDataSet[k, 15] <- as.numeric(idle_time_ratio) # tuning idle time
-    MyDataSet[k, 16] <- as.numeric(mean(sentence_length)) # tuning sentence length
-    MyDataSet[k, 17] <- as.numeric(num_of_sentence) # number of sentences
-    MyDataSet[k, 18] <- as.numeric(mean(word_length)) # tuning word length
-    MyDataSet[k, 19] <- as.numeric(num_of_words) # number of words
-    MyDataSet[k, 20] <- as.numeric(num_of_paragraphs) # number of paragraphs
-
+    MyDataSet[k,9] <- as.numeric(mean(action_time))
+    MyDataSet[k,10] <- as.numeric(var(action_time))
+    MyDataSet[k,11] <- as.numeric(mean(time_space))
+    MyDataSet[k,12] <- as.numeric(var(time_space))
+    MyDataSet[k, 13] <- as.numeric(sum(fluquence_of_change)/length(fluquence_of_change)) #`fluquence_of_change
+    MyDataSet[k, 14] <- as.numeric(word_time_ratio) #`word_time_ratio
+    MyDataSet[k, 15] <- as.numeric(word_event_ratio) #`word_event_ratio
+    MyDataSet[k, 16] <- as.numeric(event_time_ratio) # event time
+    MyDataSet[k, 17] <- as.numeric(idle_time_ratio) # idle time
+    MyDataSet[k, 18] <- as.numeric(mean(sentence_length)) # mean sentence length
+    MyDataSet[k, 19] <- as.numeric(var(sentence_length)) # variance sentence length
+    MyDataSet[k, 20] <- as.numeric(num_of_sentence) # num of sentence
+    MyDataSet[k, 21] <- as.numeric(mean(word_length)) # mean word length
+    MyDataSet[k, 22] <- as.numeric(var(word_length)) # variance word length
+    MyDataSet[k, 23] <- as.numeric(num_of_words) # num of words
+    MyDataSet[k, 24] <- as.numeric(num_of_paragraphs) # num of paragraphs
 
     if(k == 1) {
         # first user's data
@@ -253,8 +259,38 @@ for(k in 1 : length_of_loop){
 
 print(colnames(MyDataSet))
 
-if(model != 2){
-    save(MyDataSet, file = paste(cur_dir2, "/MyData.RData", sep = ""))
-    save(users, file = paste(cur_dir2, "/users.RData", sep = ""))
+set.seed(432)
+MyTrain_index <- sample(1:nrow(MyDataSet), 0.8*nrow(MyDataSet))
+MyTrain <- as.matrix(MyDataSet[MyTrain_index,2:ncol(MyDataSet)])
+MyTest <-  as.matrix(MyDataSet[-MyTrain_index,2:ncol(MyDataSet)])
+
+# make data into numeric
+MyTrain <- matrix(as.numeric(apply(MyTrain, c(1, 2), as.numeric)), nrow = nrow(MyTrain), ncol = ncol(MyTrain))
+colnames(MyTrain) <- colnames(MyDataSet)[2:ncol(MyDataSet)]
+MyTest <- matrix(as.numeric(apply(MyTest, c(1, 2), as.numeric)), nrow = nrow(MyTest), ncol = ncol(MyTest))
+colnames(MyTest) <- colnames(MyDataSet)[2:ncol(MyDataSet)]
+
+# PCA
+MyTrain_pca <- prcomp(MyTrain[,-1], center = TRUE, scale. = TRUE)
+MyTest_pca <- predict(MyTrain_pca, MyTest[,-1])
+MyTrain_pca <- cbind(MyTrain[,1], MyTrain_pca$x)
+MyTest_pca <- cbind(MyTest[,1], MyTest_pca)
+
+
+# re-order the data based on the importance of Random Forest
+rf_result <- randomForest(as.factor(MyTrain[,1]) ~ ., data = data.frame(MyTrain[,-1]))
+importance_scores <- importance(rf_result)
+feature_ranking <- rank(-importance_scores)
+MyTrain_RF <- MyTrain[, c(1, order(feature_ranking) + 1)]
+MyTest_RF <- MyTest[, c(1, order(feature_ranking) + 1)]
+
+
+
+# save data
+if(model != 2 && model != 3){
+    save(MyDataSet,users,MyTrain,MyTest,MyTest_pca,MyTrain_pca,MyTrain_RF,MyTest_RF, file = paste(cur_dir2, "/MyData.RData", sep = ""))
+}
+if(model == 3){
+    save(MyDataSet,users,MyTrain,MyTest,file = paste(cur_dir2, "/first_urser_data.RData", sep = ""))
 }
 

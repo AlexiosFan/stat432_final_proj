@@ -32,8 +32,32 @@ library(this.path)
 cur_dir2 = dirname(this.path())
 cur_dir2
 load(paste(cur_dir2, "/MyData.RData", sep = ""))
-load(paste(cur_dir2, "/users.RData", sep = ""))
 my_data <- MyDataSet
+users <- users
+train <- MyTrain
+test <- MyTest
+train_pca <- MyTrain_pca
+test_pca <- MyTest_pca
+train_rf <- MyTrain_RF
+test_rf <- MyTest_RF
+```
+
+```{r}
+if (!require('this.path')) install.packages('this.path')
+library(devtools)
+library(this.path)
+cur_dir2 = dirname(this.path())
+cur_dir2
+load(paste(cur_dir2, "/first_urser_data.RData", sep = ""))
+train <- MyTrain
+test <- MyTest
+my_data <- MyDataSet
+users <- users
+train_pca <- MyTrain_pca
+test_pca <- MyTest_pca
+train_rf <- MyTrain_rf
+test_rf <- MyTest_rf
+```
 ```
 
 ## Data Spliting
