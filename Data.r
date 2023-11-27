@@ -1,10 +1,12 @@
 if (!require('this.path')) install.packages('this.path')
 if (!require('devtools')) install.packages('devtools')
 if (!require('randomForest')) install.packages('randomForest')  
+if (!require('umap')) install.packages('umap')
 
 library(devtools)
 library(this.path)
 library(randomForest)
+library(umap)
 
 cur_dir2 = dirname(this.path())
 cur_dir2
@@ -19,7 +21,7 @@ model = 0
 length_of_loop = length(users)
 first = 0
 if(model == 2 || model == 3) {
-    length_of_loop = 10
+    length_of_loop = 100
     i = 1
     # frist be a random user
     first = sample(1:length(users), 1)
@@ -287,10 +289,9 @@ MyTest_RF <- MyTest[, c(1, order(feature_ranking) + 1)]
 
 # UMAP for the first n PCA
 n = 3
-umap_result <- umap(train_pca[,1:n], n_neighbors = 15, n_components = 2, metric = "euclidean")
-
-MyTrain_umap <- cbind(MyTrain[,1], umap_result$layout)
-MyTest_umap <- cbind(MyTest[,1], predict(umap_result, MyTest_pca[,1:n])$layout)
+umap_result <- umap(MyTrain_pca[,2:n+1], n_neighbors = 15, n_components = 2, metric = "euclidean")
+MyTrain_umap <- cbind(MyTrain_pca[,1], umap_result$layout)
+MyTest_umap <- cbind(MyTest_pca[,1], predict(umap_result, MyTest_pca[,2:n]))
 
 
 
