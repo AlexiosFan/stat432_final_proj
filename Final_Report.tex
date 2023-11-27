@@ -1,4 +1,4 @@
-\documentclass[12pt]{article}
+\documentclass[8pt]{article}
 \usepackage{amssymb}
 \usepackage{babel}
 \usepackage{geometry}
@@ -11,6 +11,9 @@
 \usepackage{hyperref}
 \usepackage{graphicx}
 \usepackage{float}
+\usepackage{paralist}
+\usepackage{xcolor}
+\usepackage{tikz}
 
 \usetikzlibrary{automata, positioning, arrows}
 
@@ -33,7 +36,23 @@
 \def\m{\mathcal{M}}
 \def\N{\mathcal{N}}
 \def\b{\,\,\,}
-
+\def\activity{\textit{activity} }
+\def\down{\textit{down\_event} }
+\def\up{\textit{up\_event} }
+\def\textchange{\textit{text\_change} }
+\def\cursor{\textit{cursor\_position} }
+\def\wordcount{\textit{word\_count} }
+\def\id{\textit{id} }
+\def\eventid{\textit{event\_id} }
+\def\downtime{\textit{down\_time} }
+\def\uptime{\textit{up\_time} }
+\def\actiontime{\textit{action\_time} }
+\def\Input{\textit{Input} }
+\def\Nonproduction{\textit{Nonproduction} }
+\def\Remove{\textit{Remove/Cut} }
+\def\Paste{\textit{Paste} }
+\def\Replace{\textit{Replace} }
+\def\MoveFromTo{\textit{Move From To} }
 
 
 
@@ -94,8 +113,75 @@ The importance of his variables shows that the importance of his variables is ve
 Based on his work, we could do more feature engineering like delete ratio, text change ratio, and paragraph balance, to improve our score.
 
 \section{Data processing}
+Based on \href{https://www.kaggle.com/competitions/linking-writing-processes-to-writing-quality/data}{the structure of the data on Kagge}, each indevidual is represented by a sequence of events and each event has plenty of variables.
+The variables include the following:
+\begin{compactitem}
+    \item \textbf{\textit{id}} - The unique ID of the essay.
+    \item \textbf{\textit{event\_id}} - The index of the event, ordered chronologically.
+    \item \textbf{\textit{down\_time}} - The time of the down event in milliseconds.
+    \item \textbf{\textit{up\_time}} - The time of the up event in milliseconds.
+    \item \textbf{\textit{action\_time}} - The duration of the event (the difference between down\_time and up\_time).
+    \item \textbf{\textit{activity}} - The category of activity which the event belongs to.
+    \begin{compactitem}
+        \item \textit{Nonproduction} - The event does not alter the text in any way.
+        \item \textit{Input} - The event adds text to the essay.
+        \item \textit{Remove/Cut} - The event removes text from the essay.
+        \item \textit{Paste} - The event changes the text through a paste input.
+        \item \textit{Replace} - The event replaces a section of text with another string.
+        \item \textit{Move From} \([x1, y1]\) To \([x2, y2]\) - The event moves a section of text spanning character index \(x1, y1\) to a new location \(x2, y2\).
+    \end{compactitem}
+    \item \textbf{\textit{down\_event}} - The name of the event when the key/mouse is pressed.
+    \item \textbf{\textit{up\_event}} - The name of the event when the key/mouse is released.
+    \item \textbf{\textit{text\_change}} - The text that changed as a result of the event (if any).
+    \item \textbf{\textit{cursor\_position}} - The character index of the text cursor after the event.
+    \item \textbf{\textit{word\_count}} - The word count of the essay after the event.
+\end{compactitem}
+This would make the data very sparse and hard to process.
+Especially, those non-numeric variables like \activity are hard to directly use in the model. 
+Therefore, in this project, effective data processing will be a crucial component and will significantly impact future outcomes.
+To achieve better data processing results, the data processing in this project can be broadly divided into three parts: \textbf{data integration}, \textbf{feature engineering}, and \textbf{dimensionality reduction}.
 
-https://www.kaggle.com/code/ravi20076/writingquality-baseline-models?rvi=1
+\subsection{Data Integration}
+In order to integrate the data, getting the whole text of each individual's essay is the first step.
+Based on the data structure, follwoing the \eventid and the instructions of \activity, we designed a algorithm to get the whole text of each individual's essay.
+
+Also, the complicated construction of the \activity makes the directly use of it impossible. To summarize and integrate it, we designed a algorithm to get the \textbf{total number} of each \activity.
+Besides, from the basic understanding of the quality of writing, the writing style of the text also plays an important role in the quality of writing.
+Therefore, we designed a algorithm to get the whole number of each indeviduals' \textbf{total number} of change their activity.
+
+After dealing with the \activity and its related variables (\down , \up , \textchange , \cursor , and \wordcount), we also need to deal with \downtime , \uptime , and \actiontime . 
+For \actiontime , there are three obviously essential indexs: \textbf{mean}, \textbf{variance}, and \textbf{sum}.
+However, since downtime and \uptime contain the informatin of the time point insteade of a interval, the situation is a little bit different. 
+According to the concept of writing skill, thinking time is an important variable.
+Therefore, we designed a algorithm to get the sequnece of \textit{pause\_time}, which is the difference between the \up of the previous event and the \down of the next event.
+Then, same as the \actiontime , we get the \textbf{mean}, \textbf{variance}, and \textbf{sum} of the \textit{pause\_time}.
+
+To summarize the data integration, we get the following variables:
+\begin{compactitem}
+    \item \textbf{\textit{id}} - The unique ID of the essay.
+    \item \textbf{\text{essay\_text}} - The whole text of the essay.
+    \item \textbf{\textit{num\_nonproduction}} - The total number of \textit{Nonproduction} activity.
+    \item \textbf{\textit{num\_input}} - The total number of \textit{Input} activity.
+    \item \textbf{\textit{num\_remove}} - The total number of \textit{Remove/Cut} activity.
+    \item \textbf{\textit{num\_paste}} - The total number of \textit{Paste} activity.
+    \item \textbf{\textit{num\_replace}} - The total number of \textit{Replace} activity.
+    \item \textbf{\textit{num\_move}} - The total number of \textit{Move From To} activity.
+    \item \textbf{\textit{num\_change\_activity}} - The total number of change activity.
+    \item \textbf{\textit{mean\_action\_time}} - The mean of \textit{action\_time}.
+    \item \textbf{\textit{var\_action\_time}} - The variance of \textit{action\_time}.
+    \item \textbf{\textit{sum\_action\_time}} - The sum of \textit{action\_time}.
+    \item \textbf{\textit{mean\_pause\_time}} - The mean of \textit{pause\_time}.
+    \item \textbf{\textit{var\_pause\_time}} - The variance of \textit{pause\_time}.
+    \item \textbf{\textit{sum\_pause\_time}} - The sum of \textit{pause\_time}.
+    \item \textbf{\textit{score}} - The score of the essay.
+\end{compactitem}
+which can be expressed as a vector for each individual.
+
+\subsection{Feature Engineering}
+From the literature review above, it is not difficult to see that the general criteria for judging the quality of writing are still applicable when assessing the merits through machine learning.
+
+\subsection{Dimensionality Reduction}
+
 
 \section{Unsupervised Learning}
 
