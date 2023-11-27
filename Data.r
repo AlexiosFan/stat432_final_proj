@@ -285,10 +285,19 @@ MyTrain_RF <- MyTrain[, c(1, order(feature_ranking) + 1)]
 MyTest_RF <- MyTest[, c(1, order(feature_ranking) + 1)]
 
 
+# UMAP for the first n PCA
+n = 3
+umap_result <- umap(train_pca[,1:n], n_neighbors = 15, n_components = 2, metric = "euclidean")
+
+MyTrain_umap <- cbind(MyTrain[,1], umap_result$layout)
+MyTest_umap <- cbind(MyTest[,1], predict(umap_result, MyTest_pca[,1:n])$layout)
+
+
+
 
 # save data
 if(model != 2 && model != 3){
-    save(MyDataSet,users,MyTrain,MyTest,MyTest_pca,MyTrain_pca,MyTrain_RF,MyTest_RF, file = paste(cur_dir2, "/MyData.RData", sep = ""))
+    save(MyDataSet,users,MyTrain,MyTest,MyTest_pca,MyTrain_pca,MyTrain_RF,MyTest_RF,MyTrain_umap,MyTest_umap, file = paste(cur_dir2, "/MyData.RData", sep = ""))
 }
 if(model == 3){
     save(MyDataSet,users,MyTrain,MyTest,file = paste(cur_dir2, "/first_urser_data.RData", sep = ""))
