@@ -10,7 +10,7 @@ users <- unique(train_logs$id)
 length(users)
 
 # model (0 for whole set and save the data, 1 for whole set but not save the data, 2 for only the first user and not save the data)
-model = 2
+model = 0
 length_of_loop = length(users)
 if(model == 2) {
     length_of_loop = 1
@@ -19,7 +19,7 @@ if(model == 2) {
 
 ## Processing
 
-# helper function
+## helper function
 # input text processing
 extractNumbers <- function(text) {
   # Regular expression to match numbers
@@ -27,6 +27,27 @@ extractNumbers <- function(text) {
   numbers <- regmatches(text, matches)[[1]]
   numbers <- as.numeric(numbers) # Convert to numeric
   return(numbers)
+}
+
+calculateSentenceLengths <- function(essayText) {
+  # Find all indices of sentence-ending punctuation
+  punctuationIndices <- unlist(gregexpr("[.!?]", essayText))
+
+  # Check if there are no sentence-ending punctuations
+  if (length(punctuationIndices) == 0) {
+    return(c(nchar(essayText)))  # Return the entire text length if no punctuations are found
+  }
+
+  # Add the start and end of the text to the indices for proper calculation
+  punctuationIndices <- c(0, punctuationIndices, nchar(essayText) + 1)
+
+  # Calculate lengths of each sentence
+  sentenceLengths <- diff(punctuationIndices) - 1
+
+  # Remove zeros from sentence lengths
+  sentenceLengths <- sentenceLengths[sentenceLengths != 0]
+
+  return(sentenceLengths)
 }
 
 processingInputs <- function(currTextInput) {
@@ -159,11 +180,7 @@ for(i in 1: length_of_loop){
     
     # number of sentences
     num_of_sentence = length(gregexpr("[.!?]", essayText)[[1]])
-    sentence_length <- rep(0, num_of_sentence)
-    sentence_length[1] <- gregexpr("[.!?]", essayText)[[1]][1]
-    for(j in 2:num_of_sentence){
-        sentence_length[j] <- gregexpr("[.!?]", essayText)[[1]][j] - gregexpr("[.!?]", essayText)[[1]][j-1]
-    }
+    sentence_length <- calculateSentenceLengths(essayText)
 
 
     # data pull in 
