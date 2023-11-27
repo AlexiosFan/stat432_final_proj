@@ -135,32 +135,64 @@ summary(lm_model)
 ```{r}
 # umap
 n = 3
-umap_result <- umap(crossing, n_neighbors = 16, n_components = 4, metric = "euclidean")
+umap_result <- umap(pca$x[,1:4], n_neighbors = 16, n_components = 4, metric = "euclidean")
 plot(umap_result$layout, col = train[,1])
 ```
 
 ```{r}
 # UMAP for the first 3 PCA
-umap_result <- umap(pca$x[,1:3], n_neighbors = 5, n_components = 2, metric = "euclidean")
+umap_result <- umap(pca$x[,1:2], n_neighbors = 5, n_components = 2, metric = "euclidean")
 plot(umap_result$layout, col = train[,1])
+
+# use kmeans to do the clustering based on the umap result
+kmeans_result <- kmeans(umap_result$layout, centers = 12)
+plot(umap_result$layout, col = kmeans_result$cluster)
+
+# confusion matrix
+table(kmeans_result$cluster, train[,1])
+```
+
+```{r}
 ```
 
 ```{r}
 # plot the first two PCA
 plot(pca$x[,2:3], col = train[,1])
+
+
 ```
 
 ```{r}
 # plot the first two important variables based on random forest
 varImpPlot(rf_model)
 
-# plot the first two most important variables vs the target
-plot(train[,15], train[,13], col = train[,1])
-
-# umap for the first two most important variables
-umap_result <- umap(train[,c(12,13,15)], n_neighbors = 5, n_components = 4, metric = "euclidean")
+# use the first two important variables to do the umap
+umap_result <- umap(train[,c(18,12)], n_neighbors = 5, n_components = 4, metric = "euclidean")
 plot(umap_result$layout, col = train[,1])
-colnames(train)
+
+# use kmeans to do the clustering based on the umap result
+kmeans_result <- kmeans(umap_result$layout, centers = 12)
+plot(umap_result$layout, col = kmeans_result$cluster)
+
+# confusion matrix
+table(kmeans_result$cluster, train[,1])
+```
+
+```{r}
+```
+
+```{r}
+
+
+```
+
+```{r}
+```
+
+```{r}
+```
+
+```{r}
 ```
 
 ```{r}
