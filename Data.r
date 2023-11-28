@@ -194,8 +194,6 @@ for(k in 1 : length_of_loop){
         fluquence_of_change[j] = (user_logs$activity[j+1] != user_logs$activity[j])
     }
 
-
-
     # ratios 
     word_count_max = max(user_logs$word_count)
     event_id_max = max(user_logs$event_id)

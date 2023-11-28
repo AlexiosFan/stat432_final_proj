@@ -55,7 +55,7 @@ my_data <- MyDataSet
 users <- users
 train_pca <- MyTrain_pca
 test_pca <- MyTest_pca
-train_rf <- MyTrain_rf
+train_rf <- MyTrain_RF
 test_rf <- MyTest_rf
 ```
 ```
@@ -115,6 +115,14 @@ plot(umap_result$layout, col = train[,1])
 
 rf_model <- randomForest(as.factor(train[,1]) ~ ., data = data.frame(train[,-1]))
 rf_model
+
+# importance
+varImpPlot(rf_model)
+
+colnames(train)[c(22,13)]
+# use the first two important variables to do the umap
+umap_result <- umap(train[,c(22,13,21)], n_neighbors = 15, n_components = 4, metric = "euclidean")
+plot(umap_result$layout, col = train[,1])
 
 # predict error
 pred <- predict(rf_model, newdata = data.frame(test[,-1]))
