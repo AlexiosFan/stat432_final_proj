@@ -6,15 +6,8 @@ load("MyData.RData")
 
 # Assuming train_1 is the loaded data
 # Discard the id
-train_1 <- train_1[, -1]
-# Convert all other columns to numerics
-train_1 <- apply(train_1, 2, as.numeric)
-
-# Split the data: 80% for training and 20% for testing
-train_size <- floor(0.8 * nrow(train_1))
-train_indices <- sample(seq_len(nrow(train_1)), size = train_size)
-train <- as.matrix(train_1[train_indices, ])
-test <- as.matrix(train_1[-train_indices, ])
+train <- t(apply(MyTrain_pca, 1, as.numeric))
+test <- t(apply(MyTest_pca, 1, as.numeric))
 
 # a vector for alpha from 0 to 1 with 0.01 increments
 alphas <- seq(0, 1, 0.01)
