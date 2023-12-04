@@ -171,31 +171,31 @@ According to the concept of writing skill, thinking time is an important variabl
 Therefore, we designed a algorithm to get the sequnece of \textit{pause\_time}, which is the difference between the \up of the previous event and the \down of the next event.
 Then, same as the \actiontime , we get the \textbf{mean}, \textbf{variance}, and \textbf{sum} of the \textit{pause\_time}.
 
-To summarize the data integration, we get the following variables:
+% To summarize the data integration, we get the following variables:
 
-{
-\small
-\begin{compactitem}
-    \item \textbf{\textit{id}} - The unique ID of the essay.
-    \item \textbf{\text{essay\_text}} - The whole text of the essay.
-    \item \textbf{\textit{num\_nonproduction}} - The total number of \textit{Nonproduction} activity.
-    \item \textbf{\textit{num\_input}} - The total number of \textit{Input} activity.
-    \item \textbf{\textit{num\_remove}} - The total number of \textit{Remove/Cut} activity.
-    \item \textbf{\textit{num\_paste}} - The total number of \textit{Paste} activity.
-    \item \textbf{\textit{num\_replace}} - The total number of \textit{Replace} activity.
-    \item \textbf{\textit{num\_move}} - The total number of \textit{Move From To} activity.
-    \item \textbf{\textit{num\_change\_activity}} - The total number of change activity.
-    \item \textbf{\textit{mean\_action\_time}} - The mean of \textit{action\_time}.
-    \item \textbf{\textit{var\_action\_time}} - The variance of \textit{action\_time}.
-    \item \textbf{\textit{sum\_action\_time}} - The sum of \textit{action\_time}.
-    \item \textbf{\textit{mean\_pause\_time}} - The mean of \textit{pause\_time}.
-    \item \textbf{\textit{var\_pause\_time}} - The variance of \textit{pause\_time}.
-    \item \textbf{\textit{sum\_pause\_time}} - The sum of \textit{pause\_time}.
-    \item \textbf{\textit{score}} - The score of the essay.
-\end{compactitem}
-}
+%{
+%\small
+%\begin{compactitem}
+%    \item \textbf{\textit{id}} - The unique ID of the essay.
+%    \item \textbf{\text{essay\_text}} - The whole text of the essay.
+%    \item \textbf{\textit{num\_nonproduction}} - The total number of \textit{Nonproduction} activity.
+%    \item \textbf{\textit{num\_input}} - The total number of \textit{Input} activity.
+%    \item \textbf{\textit{num\_remove}} - The total number of \textit{Remove/Cut} activity.
+%    \item \textbf{\textit{num\_paste}} - The total number of \textit{Paste} activity.
+%    \item \textbf{\textit{num\_replace}} - The total number of \textit{Replace} activity.
+%    \item \textbf{\textit{num\_move}} - The total number of \textit{Move From To} activity.
+%    \item \textbf{\textit{num\_change\_activity}} - The total number of change activity.
+%    \item \textbf{\textit{mean\_action\_time}} - The mean of \textit{action\_time}.
+%    \item \textbf{\textit{var\_action\_time}} - The variance of \textit{action\_time}.
+%    \item \textbf{\textit{sum\_action\_time}} - The sum of \textit{action\_time}.
+%    \item \textbf{\textit{mean\_pause\_time}} - The mean of \textit{pause\_time}.
+%    \item \textbf{\textit{var\_pause\_time}} - The variance of \textit{pause\_time}.
+%    \item \textbf{\textit{sum\_pause\_time}} - The sum of \textit{pause\_time}.
+%    \item \textbf{\textit{score}} - The score of the essay.
+%\end{compactitem}
+%}
 
-which can be expressed as a vector for each individual.
+%which can be expressed as a vector for each individual. 
 
 \subsection{Feature Engineering}
 After the data integration, we get a rough view of the data. However, the data is still not ready for the model and has a lot of room for improvement.
