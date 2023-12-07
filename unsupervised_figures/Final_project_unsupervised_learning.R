@@ -14,8 +14,8 @@ plot(1:10, wss, type = "b", xlab = "Number of Clusters", ylab = "Total Within Su
 hc <- hclust(dist(train_sample[, -1]))
 plot(hc)
 set.seed(123)
-km_result <- kmeans(train_sample[, -1], centers = 7)
-h_clusters <- cutree(hc, 7)
+km_result <- kmeans(train_sample[, -1], centers = 8)
+h_clusters <- cutree(hc, 8)
 
 kmeans_scores <- aggregate(train_sample[, 1], by = list(Cluster = km_result$cluster), FUN = mean)
 
