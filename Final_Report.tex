@@ -269,37 +269,37 @@ num\_of\_paragraphs        & -3.062e-02 & 9.004e-03 & -3.400 & 0.000687 \\
 
 To summarize the feature engineering, we get the following variables:
 
-{
-\small
-\begin{compactitem}
-    \item \textbf{\textit{id}} - The unique ID of the essay.
-    \item \textbf{\textit{present\_nonproduction}} - The present of \textit{Nonproduction} activity.
-    \item \textbf{\textit{present\_input}} - The present of \textit{Input} activity.
-    \item \textbf{\textit{present\_remove}} - The present of \textit{Remove/Cut} activity.
-    \item \textbf{\textit{present\_paste}} - The present of \textit{Paste} activity.
-    \item \textbf{\textit{present\_replace}} - The present of \textit{Replace} activity.
-    \item \textbf{\textit{present\_move}} - The present of \textit{Move From To} activity.
-    \item \textbf{\textit{present\_change\_activity}} - The present of change activity.
-    \item \textbf{\textit{mean\_action\_time}} - The mean of \textit{action\_time}.
-    \item \textbf{\textit{var\_action\_time}} - The variance of \textit{action\_time}.
-    \item \textbf{\textit{sum\_action\_time}} - The sum of \textit{action\_time}.
-    \item \textbf{\textit{mean\_pause\_time}} - The mean of \textit{pause\_time}.
-    \item \textbf{\textit{var\_pause\_time}} - The variance of \textit{pause\_time}.
-    \item \textbf{\textit{sum\_pause\_time}} - The sum of \textit{pause\_time}.
-    \item \textbf{\textit{word\_time\_ratio}} - The ratio of \textit{word\_count} and the whole time of writing.
-    \item \textbf{\textit{word\_event\_ratio}} - The ratio of \textit{word\_count} and the total number of \activity.
-    \item \textbf{\textit{event\_time\_ratio}} - The ratio of the total number of \activity and the whole time of writing.
-    \item \textbf{\textit{idle\_time\_ratio}} - The ratio of the \textit{sum\_pause\_time} and the whole time of writing.
-    \item \textbf{\textit{mean\_sentence\_length}} - The mean of the length of sentence.
-    \item \textbf{\textit{variance\_sentence\_length}} - The variance of the length of sentence.
-    \item \textbf{\textit{num\_of\_sentence}} - The total number of sentence.
-    \item \textbf{\textit{mean\_word\_length}} - The mean of the length of word.
-    \item \textbf{\textit{variance\_word\_length}} - The variance of the length of word.
-    \item \textbf{\textit{num\_of\_words}} - The total number of word.
-    \item \textbf{\textit{num\_of\_paragraphs}} - The total number of paragraph.
-    \item \textbf{\textit{score}} - The score of the essay.
-\end{compactitem}
-}
+%{
+%\small
+%\begin{compactitem}
+%    \item \textbf{\textit{id}} - The unique ID of the essay.
+%    \item \textbf{\textit{present\_nonproduction}} - The present of \textit{Nonproduction} activity.
+%    \item \textbf{\textit{present\_input}} - The present of \textit{Input} activity.
+%    \item \textbf{\textit{present\_remove}} - The present of \textit{Remove/Cut} activity.
+%    \item \textbf{\textit{present\_paste}} - The present of \textit{Paste} activity.
+%    \item \textbf{\textit{present\_replace}} - The present of \textit{Replace} activity.
+%    \item \textbf{\textit{present\_move}} - The present of \textit{Move From To} activity.
+%    \item \textbf{\textit{present\_change\_activity}} - The present of change activity.
+%    \item \textbf{\textit{mean\_action\_time}} - The mean of \textit{action\_time}.
+%    \item \textbf{\textit{var\_action\_time}} - The variance of \textit{action\_time}.
+%    \item \textbf{\textit{sum\_action\_time}} - The sum of \textit{action\_time}.
+%    \item \textbf{\textit{mean\_pause\_time}} - The mean of \textit{pause\_time}.
+%    \item \textbf{\textit{var\_pause\_time}} - The variance of \textit{pause\_time}.
+%    \item \textbf{\textit{sum\_pause\_time}} - The sum of \textit{pause\_time}.
+%    \item \textbf{\textit{word\_time\_ratio}} - The ratio of \textit{word\_count} and the whole time of writing.
+%    \item \textbf{\textit{word\_event\_ratio}} - The ratio of \textit{word\_count} and the total number of \activity.
+%    \item \textbf{\textit{event\_time\_ratio}} - The ratio of the total number of \activity and the whole time of writing.
+%    \item \textbf{\textit{idle\_time\_ratio}} - The ratio of the \textit{sum\_pause\_time} and the whole time of writing.
+%    \item \textbf{\textit{mean\_sentence\_length}} - The mean of the length of sentence.
+%    \item \textbf{\textit{variance\_sentence\_length}} - The variance of the length of sentence.
+%    \item \textbf{\textit{num\_of\_sentence}} - The total number of sentence.
+%    \item \textbf{\textit{mean\_word\_length}} - The mean of the length of word.
+%    \item \textbf{\textit{variance\_word\_length}} - The variance of the length of word.
+%    \item \textbf{\textit{num\_of\_words}} - The total number of word.
+%    \item \textbf{\textit{num\_of\_paragraphs}} - The total number of paragraph.
+%    \item \textbf{\textit{score}} - The score of the essay.
+%\end{compactitem}
+%}
 
 \subsection{Dimensionality Reduction}
 After the data integration and feature engineering, we get a lot of variables.
@@ -308,24 +308,19 @@ Therefore, we need to do some dimensionality reduction to get a better model.
 In this project, we use the \textbf{important variables based on random forest} and the combination of \textbf{PCA} and \textbf{UMAP} to do the dimensionality reduction in different models.
 
 \subsubsection{Random Forest}
-Based on the \hyperref[fig:RF_important]{Variable Importance Based on Random Forest}, the \textit{num\_of\_words} and \textit{word\_time\_ratio} are the most important variables and significantly larger than others. 
+Based on the \hyperref[fig:RF_PCA_and_UMAP]{Variable Importance Based on Random Forest}, the \textit{num\_of\_words} and \textit{word\_time\_ratio} are the most important variables and significantly larger than others. 
 And it could be useful in the further regression and classification model. 
-\begin{figure}[H]
-    \centering
-    \label{fig:RF_important}
-    \includegraphics*[scale=0.1]{figures/Variable_improtance_RF.png}
-    \caption{Variable Importance Based on Random Forest}
-\end{figure}
 
 \subsubsection{PCA and UMAP}
-Based on the \hyperref[fig:PCA_and_UMAP]{PCA and UMAP figure}, we can see that the data behaves well if we use the first two components of PCA are significantly larger than others. The behaves of the data is also good in the UMAP figure. Therefore, we can use the first two components of PCA and UMAP to do the dimensionality reduction in the further regression and classification model.
+Based on the \hyperref[fig:RF_PCA_and_UMAP]{PCA and UMAP figure}, we can see that the data behaves well if we use the first two components of PCA are significantly larger than others. The behaves of the data is also good in the UMAP figure. Therefore, we can use the first two components of PCA and UMAP to do the dimensionality reduction in the further regression and classification model.
 
 \begin{figure}[H]
     \centering
-    \includegraphics*[scale=0.1]{figures/PCA.png}
-    \includegraphics*[scale=0.1]{figures/UMAP_PAC2.png}
-    \caption{PCA and UMAP}
-    \label{fig:PCA_and_UMAP}
+    \includegraphics*[scale=0.07]{figures/Variable_improtance_RF.png}
+    \includegraphics*[scale=0.07]{figures/PCA.png}
+    \includegraphics*[scale=0.07]{figures/UMAP_PAC2.png}
+    \caption{RF important(left) and PCA \& UMAP (middle and right)}
+    \label{fig:RF_PCA_and_UMAP}
 \end{figure}
 
 
@@ -338,11 +333,11 @@ The process of applying K-Means clustering to our dataset involved several key s
 \begin{enumerate}
     \item \textbf{Data Selection and Dimensionality Reduction:} For the clustering process, we specifically chose the PCA-processed data. This decision was driven by the need to address the curse of dimensionality, which can adversely impact the performance of K-Means clustering. Through PCA, the features are reduced to a set of linearly uncorrelated components, which offers a more concise and insightful depiction of the initial data. This transformation not only increases computational efficiency but also improves the quality of the clustering. 
     
-    \item \textbf{Choosing the Number of Clusters:} The optimal number of clusters was determined using the elbow method. This involved plotting the total within-cluster sum of squares (WSS) against a range of cluster numbers and looking for a cutting-off point in the plot. The elbow point, where the rate of decrease in WSS with respect to the number of clusters sharply changes, suggests an appropriate number of clusters for the data. Based on the elbow plot, shown in the figure below, we selected k = 8 as it appeared to be the point where the WSS starts to diminish at a slower rate, suggesting a reasonable trade-off between the number of clusters and the variance explained.
+    \item \textbf{Choosing the Number of Clusters:} The optimal number of clusters was determined using the elbow method. This involved plotting the total within-cluster sum of squares (WSS) against a range of cluster numbers and looking for a cutting-off point in the plot. The elbow point, where the rate of decrease in WSS with respect to the number of clusters sharply changes, suggests an appropriate number of clusters for the data. Based on the \hyperref[fig:silhouette_analysis]{text}elbow plot, shown in the figure below, we selected k = 8 as it appeared to be the point where the WSS starts to diminish at a slower rate, suggesting a reasonable trade-off between the number of clusters and the variance explained.
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth]{unsupervised_figures/elbow_method_pca.png}
+    \includegraphics[width=0.3\textwidth]{unsupervised_figures/elbow_method_pca.png}
     \caption{Elbow Method Plot for Determining Optimal Number of Clusters}
     \label{fig:elbow_plot}
 \end{figure}
@@ -366,14 +361,14 @@ In addition to K-Means, Hierarchical Clustering was applied as a complementary a
 
     \item \textbf{Creating the Dendrogram:} The process of merging continued iteratively, and at each step, the hierarchical clustering tree was updated. This tree, or dendrogram, visually represents the cluster formations and their respective proximities.
 
-    \item \textbf{Determining the Number of Clusters:} To decide the number of clusters to retain, we examined the dendrogram and identified a level where the tree could be ‘cut’ to yield a meaningful clustering. It is difficult to determine the appropriate number of clusters \( k \) based on our dendrogram(figure 4), we introduce the Silhouette Analysis here.
+    \item \textbf{Determining the Number of Clusters:} To decide the number of clusters to retain, we examined the dendrogram and identified a level where the tree could be ‘cut’ to yield a meaningful clustering. It is difficult to determine the appropriate number of clusters \( k \) based on our dendrogram( \hyperref[fig:silhouette_analysis]{figure~\ref*{fig:silhouette_analysis}}), we introduce the Silhouette Analysis here.
 \end{enumerate}
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.8\textwidth]{unsupervised_figures/hclust_pca.png}
-    \caption{Hierarchical Clustering Dendrogram}
-    \label{fig:hierarchical_dendrogram}
-\end{figure}
+%\begin{figure}[H]
+%    \centering
+%    \includegraphics[width=0.3\textwidth]{unsupervised_figures/hclust_pca.png}
+%    \caption{Hierarchical Clustering Dendrogram}
+%    \label{fig:hierarchical_dendrogram}
+%\end{figure}
 \paragraph{Determining Optimal Clusters with Silhouette Analysis}
 We utilized silhouette analysis to objectively determine the optimal number of clusters \( k \). The silhouette method measures how similar an object is to its own cluster compared to other clusters. The silhouette score ranges from -1 to 1, where a high value indicates that the object is well matched to its own cluster and poorly matched to neighboring clusters.
 
@@ -389,10 +384,12 @@ The following steps were taken to implement silhouette analysis:
     \item \textbf{Visualizing the Results:} The silhouette scores for different \( k \) values were plotted, facilitating the selection of the number of clusters where the silhouette score starts to diminish.
 \end{enumerate}
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth]{unsupervised_figures/silhouette_method.png}
-    \caption{Silhouette Analysis for Determining the Number of Clusters}
+    \includegraphics[width=0.3\textwidth]{unsupervised_figures/elbow_method_pca.png}
+    \includegraphics[width=0.3\textwidth]{unsupervised_figures/hclust_pca.png}
+    \includegraphics[width=0.3\textwidth]{unsupervised_figures/silhouette_method.png}
+    \caption{Hierarchical Clustering Dendrogram(left) and Silhouette Analysis for Determining the Number of Clusters(right)}
     \label{fig:silhouette_analysis}
 \end{figure}
 
@@ -401,30 +398,44 @@ Following the silhouette analysis, we determined that the optimal number of clus
 \subsection{Clustering Results}
 
 The clustering algorithms provided insights into the natural groupings within the dataset. Below are the mean scores for each cluster as determined by K-Means and Hierarchical Clustering respectively.
-\subsubsection{K-Means Clustering Results}
+\subsubsection{Results of K-Means Clustering and Hierarchical Clustering}
+%\begin{table}[H]
+%\centering
+%\begin{tabular}{cc}
+%\hline
+%\textbf{Cluster} & \textbf{Mean Score} \\
+%\hline
+%1 & 2.538462 \\
+%2 & 3.332000 \\
+%3 & 4.462898 \\
+%4 & 2.896514 \\
+%5 & 3.676056 \\
+%6 & 3.792683 \\
+%7 & 3.992678 \\
+%8 & 4.741860 \\
+%\hline
+%\end{tabular}
+%\caption{Mean scores for each cluster from K-Means Clustering.}
+%\label{table:hclust_scores}
+%\end{table}
+
+%\subsubsection{Hierarchical Clustering Results}
 \begin{table}[H]
 \centering
 \begin{tabular}{cc}
-\hline
-\textbf{Cluster} & \textbf{Mean Score} \\
-\hline
-1 & 2.538462 \\
-2 & 3.332000 \\
-3 & 4.462898 \\
-4 & 2.896514 \\
-5 & 3.676056 \\
-6 & 3.792683 \\
-7 & 3.992678 \\
-8 & 4.741860 \\
-\hline
-\end{tabular}
-\caption{Mean scores for each cluster from K-Means Clustering.}
-\label{table:hclust_scores}
-\end{table}
-
-\subsubsection{Hierarchical Clustering Results}
-\begin{table}[H]
-\centering
+    \hline
+    \textbf{Cluster} & \textbf{Mean Score} \\
+    \hline
+    1 & 2.538462 \\
+    2 & 3.332000 \\
+    3 & 4.462898 \\
+    4 & 2.896514 \\
+    5 & 3.676056 \\
+    6 & 3.792683 \\
+    7 & 3.992678 \\
+    8 & 4.741860 \\
+    \hline
+    \end{tabular}
 \begin{tabular}{cc}
 \hline
 \textbf{Cluster} & \textbf{Mean Score} \\
@@ -433,8 +444,8 @@ The clustering algorithms provided insights into the natural groupings within th
 2 & 3.500000 \\
 \hline
 \end{tabular}
-\caption{Mean scores for each cluster from K-Means Clustering.}
-\label{table:kmeans_scores}
+\caption{Mean scores for each cluster from K-Means Clustering(left) and Hierarchical Clustering Results(right).}
+\label{table:hclust_scores_kmeans_scores}
 \end{table}
 
 \subsubsection{Association with Outcome Variable}
@@ -464,13 +475,8 @@ The elastic net is a combination of the Ridge and LASSO regression as shown in t
 The related tuning parameter is $\alpha$, which decides the proportion of the two penalties. 
 In this setting, we iterate all $\alpha \in [0, 1]$ with 0.01 increments. 
 In additional, we use the default lambda sequences for each $\alpha$. 
-The tuning result is shown in \hyperref[fig:elastic_net]{Figure 3}.
-\begin{figure}[H]
-    \centering
-    \includegraphics*[scale=0.25]{figures/elastic_net.png}
-    \caption{Elastic Net: Tuning $\alpha$}
-    \label{fig:elastic_net}
-\end{figure}
+The tuning result is shown in \hyperref[fig:elastic_net_lambda]{Figure~\ref*{fig:elastic_net_lambda}}.
+
 It is clear that the LASSO penalty $\alpha = 1$ does not really help with the prediction.
 The best $R^2$ is reached with the pure Ridge model. However, the difference is not significant, 
 because of the fact that the linear assumption may not hold for this dataset.
@@ -481,12 +487,13 @@ if a large penalty can influence the prediction. The lambda grid we use is
 \begin{align*}
     \texttt{lambda} = \texttt{exp(seq(-5, 5, 0.05))}
 \end{align*}
-The average tuning result with 100 simulations is shown in \hyperref[fig:lambda]{Figure 4}.
+The average tuning result with 100 simulations is shown in \hyperref[fig:elastic_net_lambda]{Figure~\ref*{fig:elastic_net_lambda}}.
 \begin{figure}[H]
     \centering
+    \includegraphics*[scale=0.25]{figures/elastic_net.png}
     \includegraphics*[scale=0.25]{figures/lambda.png}
-    \caption{Ridge: Tuning $\lambda$}
-\label{fig:lambda}
+    \caption{Ridge:Elastic Net(left) and Tuning $\lambda$(right)}
+\label{fig:elastic_net_lambda}
 \end{figure}
 Unexpectedly, the best $R^2$ is reached with the smallest lambda. 
 It indicates that the Ridge penalty cannot help with the prediction, either. 
@@ -530,7 +537,7 @@ Since there are three parameters to tune, we fix a rather small grid for simplic
     \caption{Ridge: Tuning lightbgm}
 \label{fig:lightbgm}
 \end{figure}
-In \hyperref[fig:lambda]{Figure 5}, it can be observed that \texttt{num\_leaves} is a decidable 
+In \hyperref[fig:lightbgm]{Figure~\ref*{fig:lightbgm}}, it can be observed that \texttt{num\_leaves} is a decidable 
 paramter for the prediction, where the best $R^2 \approx 0.55$ was already given by the default value.
 \texttt{learning\_rate}, on the other hand, would slightly affect the prediction: 
 the accuracy $R^2$ increases slightly, as the learning rate decreases. While the other two 
