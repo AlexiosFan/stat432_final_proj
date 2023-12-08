@@ -347,7 +347,6 @@ The process of applying K-Means clustering to our dataset involved several key s
     \label{fig:elbow_plot}
 \end{figure}
     \item \textbf{Running K-Means Clustering:} With the optimal number of clusters (k = 8) determined, we proceeded to apply the K-Means clustering algorithm to our PCA-processed data. 
-\end{enumerate}
 
 The final cluster assignments represented groupings of essays with similar characteristics as identified by the K-Means algorithm. 
     
@@ -368,6 +367,7 @@ In addition to K-Means, Hierarchical Clustering was applied as a complementary a
     \item \textbf{Creating the Dendrogram:} The process of merging continued iteratively, and at each step, the hierarchical clustering tree was updated. This tree, or dendrogram, visually represents the cluster formations and their respective proximities.
 
     \item \textbf{Determining the Number of Clusters:} To decide the number of clusters to retain, we examined the dendrogram and identified a level where the tree could be ‘cut’ to yield a meaningful clustering. It is difficult to determine the appropriate number of clusters \( k \) based on our dendrogram(figure 4), we introduce the Silhouette Analysis here.
+\end{enumerate}
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.8\textwidth]{unsupervised_figures/hclust_pca.png}
