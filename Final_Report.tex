@@ -1,4 +1,4 @@
-\documentclass[8pt]{article}
+tion\documentclass[8pt]{article}
 \usepackage{amssymb}
 \usepackage{babel}
 \usepackage{geometry}
@@ -398,10 +398,10 @@ The following steps were taken to implement silhouette analysis:
 
 Following the silhouette analysis, we determined that the optimal number of clusters for our hierarchical clustering is \( k = 2 \). 
 
-\paragraph{Clustering Results}
+\subsection{Clustering Results}
 
 The clustering algorithms provided insights into the natural groupings within the dataset. Below are the mean scores for each cluster as determined by K-Means and Hierarchical Clustering respectively.
-\subsubsection{Hierarchical Clustering Results}
+\subsubsection{K-Means Clustering Results}
 \begin{table}[H]
 \centering
 \begin{tabular}{cc}
@@ -418,11 +418,11 @@ The clustering algorithms provided insights into the natural groupings within th
 8 & 4.741860 \\
 \hline
 \end{tabular}
-\caption{Mean scores for each cluster from Hierarchical Clustering.}
+\caption{Mean scores for each cluster from K-Means Clustering.}
 \label{table:hclust_scores}
 \end{table}
 
-\subsubsection{K-Means Clustering Results}
+\subsubsection{Hierarchical Clustering Results}
 \begin{table}[H]
 \centering
 \begin{tabular}{cc}
@@ -437,13 +437,13 @@ The clustering algorithms provided insights into the natural groupings within th
 \label{table:kmeans_scores}
 \end{table}
 
-\subsection{Association with Outcome Variable}
-The clustering results were examined to assess their association with the outcome variable, which in this context is the essay score. Both K-Means and Hierarchical Clustering methods revealed discernible patterns that correlate with the scores assigned to the essays. The mean scores within clusters indicated a stratification effect where certain clusters were characterized by higher or lower essay scores. This suggests that the clusters may be capturing underlying features that are significant in determining the score of an essay.
+\subsubsection{Association with Outcome Variable}
+The association between the clustering results and the outcome variable—in this case, the essay score—was evaluated. Using the K-Means and Hierarchical Clustering methods, it was possible to identify patterns that were related to the essay scores. There was a stratification effect visible in the mean scores within the clusters, with certain clusters having higher or lower essay scores. This implies that the clusters might be capturing underlying characteristics that are important for figuring out an essay's grade.
 
-\subsection{Insights from Clustering Results}
-The clustering results offer valuable insights into the data structure and the relationships between different essays. For instance, essays that are grouped into the same cluster might share similar writing styles, topics, or other latent attributes that are not explicitly measured but are influential in the scoring process. These insights could guide further feature engineering and data preprocessing steps for the supervised learning models.
+\subsubsection{Insights from Clustering Results}
+The clustering results provide important information into the data structure and the relationships between different essays. Essays that belong to the same cluster, for example, may have similar topics, writing styles, or other latent characteristics that are important in the scoring process but are not measured directly. For the supervised learning models, these discoveries may direct future feature engineering and data preprocessing procedures.
 
-\subsection{Utility for Supervised Model}
+\subsubsection{Utility for Supervised Model}
 The clusters identified could be useful in enhancing the predictive power of the supervised models. By integrating cluster assignments as new features, the model can leverage the information about the groupings that emerged from the unsupervised learning phase. For example, the centroid of a cluster or the distance of an essay from the centroid could be a valuable predictor that captures the essence of each group. Moreover, understanding cluster characteristics can help in formulating new hypotheses about the scoring process and tailoring the models to better fit the complexity of the dataset.
 
 \subsection{Conclusion}
