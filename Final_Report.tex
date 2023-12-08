@@ -495,24 +495,18 @@ Even though Ridge penalty helps to resolve high multicollinearity and LASSO pena
 helps to select features, they cannot help with the prediction without the linear assumption.
 
 \subsection{Regression Model 2: Support Vector Regression}
-The K-Nearest Neighbors (KNN) regression was explored as an alternative to linear models. This non-parametric method was expected to capture complex relationships in the dataset that linear models might miss. The model was first tuned using the \texttt{caret} package, testing neighbor values (k) from 1 to 20. To further refine the model, features were scaled, and a distance-weighted approach was employed, extending the range of k values up to 30. 
+Following the insights gained from the limited effectiveness of linear models, we explored Support Vector Regression (SVR) with the aim to capture non-linear patterns within the data. SVR is known for its robustness and effectiveness in handling non-linear relationships by using kernel functions. We utilized the \texttt{e1071} and \texttt{caret} packages in R for our implementation, with a radial basis function kernel, given its commonality in capturing a range of non-linear patterns.
 
-\paragraph{Initial KNN Tuning}
-In the initial tuning phase, the KNN model demonstrated moderate performance, but the results were not satisfactory. The best R-squared achieved was approximately -0.4513668, which suggests that the model performed worse than a simple horizontal line model.
+\paragraph{SVR Tuning and Cross-Validation}
+A grid search was conducted to tune two critical hyperparameters of SVR: the cost parameter $C$, which controls the trade-off between the model's complexity and the degree to which deviations larger than $\epsilon$ are tolerated in optimization; and $\sigma$, the kernel parameter which defines the width of the kernel function. We varied $C$ from $10^{-2}$ to $10^{2}$ and $\sigma$ from $10^{-3}$ to $10^{1}$ to find the optimal combination that minimizes the root mean squared error (RMSE).
 
-This negative R-squared value implies that either the selected features are not adequately informative, the distance metric used in KNN is not capturing the nuances of the dataset effectively, or the dataset itself presents complexities that the KNN model cannot handle. This outcome underscores the need to re-evaluate the feature selection, consider alternative distance metrics, or explore different, potentially more sophisticated, modeling approaches that are better suited to the intricacies of the dataset at hand.
+\paragraph{Model Selection and Evaluation}
+The model selection was based on 10-fold cross-validation, repeated three times to ensure the reliability of the evaluation. The best performing model, as indicated by the lowest RMSE, used a $\sigma$ value of 0.01 and $C$ value of 1. The corresponding R-squared value of approximately 0.5116232 suggests that SVR was able to explain over half of the variance in the essay scores, a substantial improvement over the linear models, yet it indicates room for further enhancement either through additional hyperparameter tuning or alternative modeling techniques.
 
-\paragraph{Refined KNN Tuning}
-Post refinement, the model's performance improved. The optimal number of neighbors was identified as k = 20, based on the lowest RMSE achieved. Despite this improvement, the model's R-squared on the test set was still relatively low ([your R-squared value]), suggesting that KNN might not be effectively capturing the underlying patterns of the dataset.
+The final selected SVR model, therefore, represents a step forward in predicting essay scores, highlighting the ability of kernel-based methods in capturing complex relationships within the data that are not necessarily linear.
 
-\begin{figure}[H]
-    \centering
-    \includegraphics*[scale=0.25]{figures/knn_performance.png}
-    \caption{KNN Regression: Tuning k values}
-    \label{fig:knn_performance}
-\end{figure}
+Despite its improved performance, the SVR model still presents an R-squared value indicating that a portion of the variability in the essay scores remains unexplained, suggesting potential exploration into more nuanced features or alternative regression techniques that could further capture the intricacies of essay grading.
 
-The model's suboptimal performance could be attributed to the high-dimensionality and the specific nature of the dataset, which might not be conducive to distance-based methods like KNN. Additionally, the lack of a clear pattern or relationship between features and essay scores might have hindered the model's ability to make accurate predictions. This experience with KNN underscores the challenges of applying non-parametric methods to complex datasets and highlights the need for further exploration of other models or advanced feature engineering techniques.
 \subsection{Regression Model 3: LightBGM}
 This model is inspired by ZhengHeng's method as presented in the literature review.
 To recap the method, it is a gradient boosting framework that uses tree based algorithms. 
