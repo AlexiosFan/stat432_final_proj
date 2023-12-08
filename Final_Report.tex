@@ -83,6 +83,21 @@ To achieve this goal, we have not only conducted comprehensive and thorough data
 
 
 % mrm write above this line, zxf write below this line
+Most of the approaches that we applied are based on 
+the lecture notes and homework assignments, including K-means 
+clustering, hierarchical clustering, linear regression and random forest. 
+We also combined the regression and unsupervised learning approaches 
+in the SVR. In addition, we also tried the approach learned from the Kaggle post, 
+i.e. LightGBM regression. This approach proves to be the best approach amongst six 
+approaches we explored. 
+The reason may be that the gradient boosting model is able to learn the non-linear structure behind the 
+feature engineered data. 
+Our results shows that the claasical approaches are not 
+effective for this dataset. 
+The reason is that we had to summarize the user log into one record for each observation, 
+which loses some features and requires to find out the physical meaning of some metrics. 
+In addition, the classical assumptions such as linear relationship may not hold in this dataset.
+Thus, some deep learning approaches with neuron network may work well instead. 
 
 
 \section{Literature Review}
@@ -530,7 +545,7 @@ The final selected SVR model, therefore, represents a step forward in predicting
 
 Despite its improved performance, the SVR model still presents an R-squared value indicating that a portion of the variability in the essay scores remains unexplained, suggesting potential exploration into more nuanced features or alternative regression techniques that could further capture the intricacies of essay grading.
 
-\subsection{Regression Model 3: LightBGM}
+\subsection{Regression Model 3: LightGBM}
 This model is inspired by ZhengHeng's method as presented in the literature review.
 To recap the method, it is a gradient boosting framework that uses tree based algorithms. 
 Upon many objectives, we choose the regression model. 
@@ -550,17 +565,17 @@ Since there are three parameters to tune, we fix a rather small grid for simplic
 \begin{figure}[H]
     \centering
     \includegraphics*[scale=0.15]{figures/rsquare_lightbgm.png}
-    \caption{Ridge: Tuning lightbgm}
-\label{fig:lightbgm}
+    \caption{Ridge: Tuning lightgbm}
+\label{fig:lightgbm}
 \end{figure}
-In \hyperref[fig:lightbgm]{Figure~\ref*{fig:lightbgm}}, it can be observed that \texttt{num\_leaves} is a decidable 
+In \hyperref[fig:lightgbm]{Figure~\ref*{fig:lightgbm}}, it can be observed that \texttt{num\_leaves} is a decidable 
 paramter for the prediction, where the best $R^2 \approx 0.55$ was already given by the default value.
 \texttt{learning\_rate}, on the other hand, would slightly affect the prediction: 
 the accuracy $R^2$ increases slightly, as the learning rate decreases. While the other two 
 paramters do have an influence, \texttt{nrounds} is not really effective here:
 because a fast convergence of the predicion is easily witnessed.  
 
-Different from what we have expected, the lightbgm model does not significantly rely on the computation power. 
+Different from what we have expected, the lightgbm model does not significantly rely on the computation power. 
 Without using a GPU, we still manage to train and use the model in a reasonable time. 
 Similarly, it did not yield an extraordinarily good result, either. Although the result is much better
 than the classical regressors and classifierse, it is still not comparable to deep learning models 
