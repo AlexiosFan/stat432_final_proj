@@ -78,6 +78,8 @@
 
 \section{Project Description and Summary}
 
+In this project, we are trying to predict the quality of writing based on the writing process withou the information of the content. 
+To achieve this goal, we have not only conducted comprehensive and thorough data engineering, but also introduced a variety of different classification and regression models for processing and optimization.
 
 
 % mrm write above this line, zxf write below this line
@@ -97,21 +99,6 @@ record for each observation.
 
 Looking into various discussions, we found two revealed methods highly effective with detailed descriptions. 
 We analyze those methods and exploit some features in our project. 
-\subsection{LGBM Regression}
-\href{https://www.kaggle.com/code/hengzheng/link-writing-simple-lgbm-baseline}{Link Writing Simple LGBM baseline} by ZhengHeng
-presented the author's Python implementation of LGBM regression model for score prediction. The author's approach 
-reached a score of 0.589 and ranked 382nd on the leaderboard. Although the author was not amongst the top of the leaderboard, 
-his approach was simple and inspired many other people, as shown in this \href{https://www.kaggle.com/competitions/linking-writing-processes-to-writing-quality/discussion/451081}{discussion}.
-
-ZhengHeng's approach can be summarized into two steps. First, he did a feature engineering on the data. 
-By considering the physical meaning of the relationship between features, he generated some new features from 
-the existing log and discarded those high correlated features. Some of new features are the ratio of 
-\textbf{word count}, \textbf{idle time} and \textbf{event time}. Second, he trained the LGBM regression model
-on a five-fold cross validation. The Light Gradient Boosting Machine (LGBM) is a gradient boosting framework
-that uses tree based learning algorithms. 
-This newly developed model grows tree vertically in a leaf-wise fashion, while the traditional tree-based models
-grow horizontally in a level-wise fashion. The author tuned the model manually and publish the best parameters. 
-% Decide if we want to use this regressor?
 
 \subsection{Feature Engineering}
 \href{https://www.kaggle.com/code/hiarsl/feature-engineering-sentence-paragraph-features}{Feature Engineering Sentence and Pargraph Feature} by Matthias Hauser
@@ -128,6 +115,23 @@ These features are very useful and meaningful which could be used in our project
 Futhermore, the author also gave us the mean importance of his variables. The graph is shown at the end of \href{https://www.kaggle.com/code/hiarsl/feature-engineering-sentence-paragraph-features/notebook}{his post}.
 The importance of his variables shows that the importance of his variables is very close to our natural knowledge. Some of the most important variables are \textbf{the length of words}, \textbf{pause time}, and \textbf{sentence length}, which are also the standard by which we judge a person’s writing level in life.
 Based on his work, we could do more feature engineering like delete ratio, text change ratio, and paragraph balance, to improve our score.
+
+
+\subsection{LGBM Regression}
+\href{https://www.kaggle.com/code/hengzheng/link-writing-simple-lgbm-baseline}{Link Writing Simple LGBM baseline} by ZhengHeng
+presented the author's Python implementation of LGBM regression model for score prediction. The author's approach 
+reached a score of 0.589 and ranked 382nd on the leaderboard. Although the author was not amongst the top of the leaderboard, 
+his approach was simple and inspired many other people, as shown in this \href{https://www.kaggle.com/competitions/linking-writing-processes-to-writing-quality/discussion/451081}{discussion}.
+
+ZhengHeng's approach can be summarized into two steps. First, he did a feature engineering on the data. 
+By considering the physical meaning of the relationship between features, he generated some new features from 
+the existing log and discarded those high correlated features. Some of new features are the ratio of 
+\textbf{word count}, \textbf{idle time} and \textbf{event time}. Second, he trained the LGBM regression model
+on a five-fold cross validation. The Light Gradient Boosting Machine (LGBM) is a gradient boosting framework
+that uses tree based learning algorithms. 
+This newly developed model grows tree vertically in a leaf-wise fashion, while the traditional tree-based models
+grow horizontally in a level-wise fashion. The author tuned the model manually and publish the best parameters. 
+% Decide if we want to use this regressor?
 
 \section{Data processing}
 Based on \href{https://www.kaggle.com/competitions/linking-writing-processes-to-writing-quality/data}{the structure of the data on Kagge}, each indevidual is represented by a sequence of events and each event has plenty of variables.
@@ -219,6 +223,8 @@ Their names are self-explanatory.
 %The \textit{event\_time\_ratio} is the ratio of the total number of \activity and the whole time of writing, which reflects the frequency of operation.
 %The \textit{idle\_time\_ratio} is the ratio of the \textit{sum\_pause\_time} and the whole time of writing, which reflects the thinking time of writing.
 Based on the concept of writing skill, all these variables should be positively correlated with the quality of writing, which also shown by the linear regression model result (Table~\ref{tab:regression-coefficients}).
+
+{\small
 \begin{table}[ht]
     \centering
     \caption{Regression Coefficients}
@@ -240,6 +246,7 @@ Based on the concept of writing skill, all these variables should be positively 
     \bottomrule
     \end{tabular}
 \end{table}
+}
 
 Next, although the \textit{essay\_text} contains a lot of information about the quality of writing, it cannot be directly used in the model. 
 Therefore, we need to switch it into some variables that can be used in the model.
@@ -249,7 +256,7 @@ Their names are self-explanatory.
 %which are the mean, variance, and total number of the length of sentence, the length of word, and the number of sentence and paragraph.
 Based on the linear regression model result (Table~\ref{tab:regression-coefficients-2}), the correlation between these variables and the quality of writing has shown.
 
-
+{\small
 \begin{table}[ht]
 \centering
 \caption{Regression Coefficients for Document Features}
@@ -274,8 +281,9 @@ num\_of\_paragraphs        & -3.062e-02 & 9.004e-03 & -3.400 & 0.000687 \\
 \bottomrule
 \end{tabular}
 \end{table}
+}
 
-To summarize the feature engineering, we get the following variables:
+%To summarize the feature engineering, we get the following variables:
 
 %{
 %\small
@@ -315,19 +323,19 @@ However, some of them are highly correlated and some of them are not useful for 
 Therefore, we need to do some dimensionality reduction to get a better model.
 In this project, we use the \textbf{important variables based on random forest} and the combination of \textbf{PCA} and \textbf{UMAP} to do the dimensionality reduction in different models.
 
-\subsubsection{Random Forest}
+\subsubsection{Random Forest and PCA+UMAP}
 Based on the \hyperref[fig:RF_PCA_and_UMAP]{Variable Importance Based on Random Forest}, the \textit{num\_of\_words} and \textit{word\_time\_ratio} are the most important variables and significantly larger than others. 
 And it could be useful in the further regression and classification model. 
 
-\subsubsection{PCA and UMAP}
-Based on the \hyperref[fig:RF_PCA_and_UMAP]{PCA and UMAP figure}, we can see that the data behaves well if we use the first two components of PCA are significantly larger than others. The behaves of the data is also good in the UMAP figure. Therefore, we can use the first two components of PCA and UMAP to do the dimensionality reduction in the further regression and classification model.
+% \subsubsection{PCA and UMAP}
+Based on the \hyperref[fig:RF_PCA_and_UMAP]{PCA+UMAP}, we can see that the data behaves well if we use the first two components of PCA are significantly larger than others. The behaves of the data is also good in the UMAP figure. Therefore, we can use the first two components of PCA and UMAP to do the dimensionality reduction in the further regression and classification model.
 
 \begin{figure}[H]
     \centering
     \includegraphics*[scale=0.07]{figures/Variable_improtance_RF.png}
     \includegraphics*[scale=0.07]{figures/PCA.png}
     \includegraphics*[scale=0.07]{figures/UMAP_PAC2.png}
-    \caption{RF important(left) and PCA \& UMAP (middle and right)}
+    \caption{RF important(left) and PCA+UMAP (middle and right)}
     \label{fig:RF_PCA_and_UMAP}
 \end{figure}
 
