@@ -367,17 +367,89 @@ In addition to K-Means, Hierarchical Clustering was applied as a complementary a
 
     \item \textbf{Creating the Dendrogram:} The process of merging continued iteratively, and at each step, the hierarchical clustering tree was updated. This tree, or dendrogram, visually represents the cluster formations and their respective proximities.
 
-    \item \textbf{Determining the Number of Clusters:} To decide the number of clusters to retain, we examined the dendrogram and identified a level where the tree could be ‘cut’ to yield a meaningful clustering. We 
-\end{enumerate}
-
-The dendrogram resulting from hierarchical clustering is shown in Figure 3. This visualization aids in understanding the multi-level hierarchy of clusters and provides insights into how different groups of essays are related to each other in terms of their scoring attributes.
-
+    \item \textbf{Determining the Number of Clusters:} To decide the number of clusters to retain, we examined the dendrogram and identified a level where the tree could be ‘cut’ to yield a meaningful clustering. It is difficult to determine the appropriate number of clusters \( k \) based on our dendrogram(figure 4), we introduce the Silhouette Analysis here.
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.8\textwidth]{unsupervised_figures/hclust_pca.png}
     \caption{Hierarchical Clustering Dendrogram}
     \label{fig:hierarchical_dendrogram}
 \end{figure}
+\paragraph{Determining Optimal Clusters with Silhouette Analysis}
+We utilized silhouette analysis to objectively determine the optimal number of clusters \( k \). The silhouette method measures how similar an object is to its own cluster compared to other clusters. The silhouette score ranges from -1 to 1, where a high value indicates that the object is well matched to its own cluster and poorly matched to neighboring clusters.
+
+The following steps were taken to implement silhouette analysis:
+
+\begin{enumerate}
+    \item \textbf{Computing Silhouette Scores:} For each value of \( k \), we computed the average silhouette score for all points. This was done using the \texttt{silhouette} function from the \texttt{cluster} package in R.
+    
+    \item \textbf{Iterating Over Various \( k \) Values:} We iterated over a range of \( k \) values and calculated the silhouette score for each. Typically, the range starts from 2 to an upper limit that makes sense for the dataset.
+    
+    \item \textbf{Selecting \( k \) with the Highest Score:} The optimal number of clusters \( k \) is the one that maximizes the average silhouette score. This indicates a structure where clusters are well separated and cohesive.
+    
+    \item \textbf{Visualizing the Results:} The silhouette scores for different \( k \) values were plotted, facilitating the selection of the number of clusters where the silhouette score starts to diminish.
+\end{enumerate}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{unsupervised_figures/silhouette_method.png}
+    \caption{Silhouette Analysis for Determining the Number of Clusters}
+    \label{fig:silhouette_analysis}
+\end{figure}
+
+Following the silhouette analysis, we determined that the optimal number of clusters for our hierarchical clustering is \( k = 2 \). 
+
+\paragraph{Clustering Results}
+
+The clustering algorithms provided insights into the natural groupings within the dataset. Below are the mean scores for each cluster as determined by K-Means and Hierarchical Clustering respectively.
+\subsubsection{Hierarchical Clustering Results}
+\begin{table}[H]
+\centering
+\begin{tabular}{cc}
+\hline
+\textbf{Cluster} & \textbf{Mean Score} \\
+\hline
+1 & 2.538462 \\
+2 & 3.332000 \\
+3 & 4.462898 \\
+4 & 2.896514 \\
+5 & 3.676056 \\
+6 & 3.792683 \\
+7 & 3.992678 \\
+8 & 4.741860 \\
+\hline
+\end{tabular}
+\caption{Mean scores for each cluster from Hierarchical Clustering.}
+\label{table:hclust_scores}
+\end{table}
+
+\subsubsection{K-Means Clustering Results}
+\begin{table}[H]
+\centering
+\begin{tabular}{cc}
+\hline
+\textbf{Cluster} & \textbf{Mean Score} \\
+\hline
+1 & 3.732405 \\
+2 & 3.500000 \\
+\hline
+\end{tabular}
+\caption{Mean scores for each cluster from K-Means Clustering.}
+\label{table:kmeans_scores}
+\end{table}
+
+\subsection{Association with Outcome Variable}
+The clustering results were examined to assess their association with the outcome variable, which in this context is the essay score. Both K-Means and Hierarchical Clustering methods revealed discernible patterns that correlate with the scores assigned to the essays. The mean scores within clusters indicated a stratification effect where certain clusters were characterized by higher or lower essay scores. This suggests that the clusters may be capturing underlying features that are significant in determining the score of an essay.
+
+\subsection{Insights from Clustering Results}
+The clustering results offer valuable insights into the data structure and the relationships between different essays. For instance, essays that are grouped into the same cluster might share similar writing styles, topics, or other latent attributes that are not explicitly measured but are influential in the scoring process. These insights could guide further feature engineering and data preprocessing steps for the supervised learning models.
+
+\subsection{Utility for Supervised Model}
+The clusters identified could be useful in enhancing the predictive power of the supervised models. By integrating cluster assignments as new features, the model can leverage the information about the groupings that emerged from the unsupervised learning phase. For example, the centroid of a cluster or the distance of an essay from the centroid could be a valuable predictor that captures the essence of each group. Moreover, understanding cluster characteristics can help in formulating new hypotheses about the scoring process and tailoring the models to better fit the complexity of the dataset.
+
+\subsection{Conclusion}
+The clustering results are indeed associated with the outcome variable, providing a non-trivial partitioning of the data that reflects the scoring pattern. By revealing the intrinsic structure within the essays, the unsupervised learning approach not only aids in understanding the dataset better but also offers a strategic direction for improving supervised learning algorithms. The use of cluster-based features could potentially increase the accuracy and interpretability of the predictive models.
+
+
 
 \section{Regression/Classification Models}
 
