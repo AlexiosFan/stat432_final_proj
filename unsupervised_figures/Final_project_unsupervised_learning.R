@@ -13,14 +13,25 @@ plot(1:10, wss, type = "b", xlab = "Number of Clusters", ylab = "Total Within Su
 
 hc <- hclust(dist(train_sample[, -1]))
 plot(hc)
+
+
+library(cluster)
+
+sil_width <- rep(0, 9)
+for(i in 2:10) {
+  cluster_assignments <- cutree(hc, i)
+  # Calculate the silhouette width
+  sil_width[i-1] <- mean(silhouette(cluster_assignments, dist(train_sample[, -1]))[, "sil_width"])
+}
+
+plot(2:10, sil_width, type = "b", xlab = "Number of Clusters", ylab = "Average Silhouette Width")
 set.seed(123)
 km_result <- kmeans(train_sample[, -1], centers = 8)
-h_clusters <- cutree(hc, 8)
+h_clusters <- cutree(hc, 2)
 
 kmeans_scores <- aggregate(train_sample[, 1], by = list(Cluster = km_result$cluster), FUN = mean)
 
 hclust_scores <- aggregate(train_sample[, 1], by = list(Cluster = h_clusters), FUN = mean)
-
 #using random forest
 
 set.seed(123) 
