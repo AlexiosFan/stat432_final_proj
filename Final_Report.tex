@@ -331,11 +331,53 @@ Based on the \hyperref[fig:PCA_and_UMAP]{PCA and UMAP figure}, we can see that t
 
 \section{Unsupervised Learning}
 
-\subsection{* model1}
+\subsection{Clustering Algorithm 1: K-Means Clustering}
+K-Means clustering was selected for its efficiency and effectiveness in identifying distinct groupings within large datasets. As a partitioning algorithm, it works well for datasets where the clusters are roughly spherical and of similar size. 
+The process of applying K-Means clustering to our dataset involved several key steps:
 
+\begin{enumerate}
+    \item \textbf{Data Selection and Dimensionality Reduction:} For the clustering process, we specifically chose the PCA-processed data. This decision was driven by the need to address the curse of dimensionality, which can adversely impact the performance of K-Means clustering. Through PCA, the features are reduced to a set of linearly uncorrelated components, which offers a more concise and insightful depiction of the initial data. This transformation not only increases computational efficiency but also improves the quality of the clustering. 
+    
+    \item \textbf{Choosing the Number of Clusters:} The optimal number of clusters was determined using the elbow method. This involved plotting the total within-cluster sum of squares (WSS) against a range of cluster numbers and looking for a cutting-off point in the plot. The elbow point, where the rate of decrease in WSS with respect to the number of clusters sharply changes, suggests an appropriate number of clusters for the data. Based on the elbow plot, shown in the figure below, we selected k = 8 as it appeared to be the point where the WSS starts to diminish at a slower rate, suggesting a reasonable trade-off between the number of clusters and the variance explained.
 
-\subsection{* model2}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{unsupervised_figures/elbow_method_pca.png}
+    \caption{Elbow Method Plot for Determining Optimal Number of Clusters}
+    \label{fig:elbow_plot}
+\end{figure}
+    \item \textbf{Running K-Means Clustering:} With the optimal number of clusters (k = 8) determined, we proceeded to apply the K-Means clustering algorithm to our PCA-processed data. 
+\end{enumerate}
 
+The final cluster assignments represented groupings of essays with similar characteristics as identified by the K-Means algorithm. 
+    
+    \item \textbf{Analyzing the Clusters:} After forming the clusters, their characteristics were analyzed. This included examining the average essay scores within each cluster, which provided insights into potential patterns or groupings in the essay scoring data.
+\end{enumerate}
+
+The results of K-Means clustering were expected to reveal natural groupings within the essays that could correlate with their scoring. These insights were intended to inform and enhance the development of subsequent supervised learning models.
+\subsection{Clustering Algorithm 2: Hierarchical Clustering}
+In addition to K-Means, Hierarchical Clustering was applied as a complementary approach. This method is particularly useful for identifying the hierarchical relationships between data points and does not require pre-specification of the number of clusters. 
+
+\begin{enumerate}
+    \item \textbf{Creating a Distance Matrix:} The first step involved calculating a distance matrix that represented the distances between each pair of points in our PCA-processed data. We used the Euclidean distance metric, which is a common choice for hierarchical clustering.
+
+    \item \textbf{Building the Hierarchical Structure:} Using this distance matrix, a hierarchical clustering tree (dendrogram) was constructed. This was achieved using an agglomerative approach, where each data point initially represented a single-cluster, and pairs of clusters were merged as one moves up the hierarchy.
+
+    \item \textbf{Merging Clusters:} In each successive iteration, the two nearest clusters were combined into a single cluster. The ‘nearest’ clusters were those with the smallest distance between them, which could be computed in various ways such as single linkage (minimum distance), complete linkage (maximum distance), or average linkage (average distance).
+
+    \item \textbf{Creating the Dendrogram:} The process of merging continued iteratively, and at each step, the hierarchical clustering tree was updated. This tree, or dendrogram, visually represents the cluster formations and their respective proximities.
+
+    \item \textbf{Determining the Number of Clusters:} To decide the number of clusters to retain, we examined the dendrogram and identified a level where the tree could be ‘cut’ to yield a meaningful clustering. We 
+\end{enumerate}
+
+The dendrogram resulting from hierarchical clustering is shown in Figure 3. This visualization aids in understanding the multi-level hierarchy of clusters and provides insights into how different groups of essays are related to each other in terms of their scoring attributes.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{unsupervised_figures/hclust_pca.png}
+    \caption{Hierarchical Clustering Dendrogram}
+    \label{fig:hierarchical_dendrogram}
+\end{figure}
 
 \section{Regression/Classification Models}
 
@@ -380,8 +422,25 @@ The interpretation of the bad fitting of linear regression model still lies in t
 Even though Ridge penalty helps to resolve high multicollinearity and LASSO penalty 
 helps to select features, they cannot help with the prediction without the linear assumption.
 
-\subsection{Regression Model 2: *}
+\subsection{Regression Model 2: Support Vector Regression}
+The K-Nearest Neighbors (KNN) regression was explored as an alternative to linear models. This non-parametric method was expected to capture complex relationships in the dataset that linear models might miss. The model was first tuned using the \texttt{caret} package, testing neighbor values (k) from 1 to 20. To further refine the model, features were scaled, and a distance-weighted approach was employed, extending the range of k values up to 30. 
 
+\paragraph{Initial KNN Tuning}
+In the initial tuning phase, the KNN model demonstrated moderate performance, but the results were not satisfactory. The best R-squared achieved was approximately -0.4513668, which suggests that the model performed worse than a simple horizontal line model.
+
+This negative R-squared value implies that either the selected features are not adequately informative, the distance metric used in KNN is not capturing the nuances of the dataset effectively, or the dataset itself presents complexities that the KNN model cannot handle. This outcome underscores the need to re-evaluate the feature selection, consider alternative distance metrics, or explore different, potentially more sophisticated, modeling approaches that are better suited to the intricacies of the dataset at hand.
+
+\paragraph{Refined KNN Tuning}
+Post refinement, the model's performance improved. The optimal number of neighbors was identified as k = 20, based on the lowest RMSE achieved. Despite this improvement, the model's R-squared on the test set was still relatively low ([your R-squared value]), suggesting that KNN might not be effectively capturing the underlying patterns of the dataset.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics*[scale=0.25]{figures/knn_performance.png}
+    \caption{KNN Regression: Tuning k values}
+    \label{fig:knn_performance}
+\end{figure}
+
+The model's suboptimal performance could be attributed to the high-dimensionality and the specific nature of the dataset, which might not be conducive to distance-based methods like KNN. Additionally, the lack of a clear pattern or relationship between features and essay scores might have hindered the model's ability to make accurate predictions. This experience with KNN underscores the challenges of applying non-parametric methods to complex datasets and highlights the need for further exploration of other models or advanced feature engineering techniques.
 \subsection{Regression Model 3: LightBGM}
 This model is inspired by ZhengHeng's method as presented in the literature review.
 To recap the method, it is a gradient boosting framework that uses tree based algorithms. 
