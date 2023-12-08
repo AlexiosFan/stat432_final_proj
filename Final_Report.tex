@@ -498,8 +498,8 @@ if a large penalty can influence the prediction. The lambda grid we use is
 The average tuning result with 100 simulations is shown in \hyperref[fig:elastic_net_lambda]{Figure~\ref*{fig:elastic_net_lambda}}.
 \begin{figure}[H]
     \centering
-    \includegraphics*[scale=0.25]{figures/elastic_net.png}
-    \includegraphics*[scale=0.25]{figures/lambda.png}
+    \includegraphics*[scale=0.15]{figures/elastic_net.png}
+    \includegraphics*[scale=0.15]{figures/lambda.png}
     \caption{Ridge:Elastic Net(left) and Tuning $\lambda$(right)}
 \label{fig:elastic_net_lambda}
 \end{figure}
@@ -541,7 +541,7 @@ Since there are three parameters to tune, we fix a rather small grid for simplic
 \end{align*}
 \begin{figure}[H]
     \centering
-    \includegraphics*[scale=0.25]{figures/rsquare_lightbgm.png}
+    \includegraphics*[scale=0.15]{figures/rsquare_lightbgm.png}
     \caption{Ridge: Tuning lightbgm}
 \label{fig:lightbgm}
 \end{figure}
@@ -583,8 +583,9 @@ and $\tau \approx 0.75$. Since there is an obvious concentration,
 this model is useful in the sense that it can show a general trend of the score.
 However, it is not a good choice for sophisticated prediction as of the low accuracy.
 \begin{figure}[H]
-    \includegraphics*[scale=0.25]{figures/contour_plot_accuracy.png}
-    \includegraphics*[scale=0.25]{figures/contour_plot_accuracy_with_tolerance.png}
+    \centering
+    \includegraphics*[scale=0.15]{figures/contour_plot_accuracy.png}
+    \includegraphics*[scale=0.15]{figures/contour_plot_accuracy_with_tolerance.png}
     \caption{Contour plots of \texttt{accuracy} and \texttt{accuracy with tolerance}}
     \label{fig:contour}
 \end{figure}
