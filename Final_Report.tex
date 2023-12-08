@@ -78,6 +78,11 @@
 
 \section{Project Description and Summary}
 
+
+
+% mrm write above this line, zxf write below this line
+
+
 \section{Literature Review}
 On the Kaggle website, there are many discussions with profound quality and insightful materials. 
 In general, participants tend to use the modern deep learning models such as convolution neural network,
@@ -208,10 +213,11 @@ To achieve this goal, we can simply get the \textbf{ratio} of each \activity and
 Secondly, from the literature review above, it is not difficult to see that the general criteria for judging the quality of writing are still applicable when assessing the merits through machine learning.
 Therefore, we create some variables based on the general criteria for judging the quality of writing.
 These new variables are \textit{word\_time\_ratio}, \textit{word\_event\_ratio},\textit{event\_time\_ratio}, and \textit{idle\_time\_ratio}. 
-The \textit{word\_time\_ratio} is the ratio of the \textit{word\_count} and the whole time of writing, which reflects the speed of writing.
-The \textit{word\_event\_ratio} is the ratio of the \textit{word\_count} and the total number of \activity, which reflects the efficiency of writing.
-The \textit{event\_time\_ratio} is the ratio of the total number of \activity and the whole time of writing, which reflects the frequency of operation.
-The \textit{idle\_time\_ratio} is the ratio of the \textit{sum\_pause\_time} and the whole time of writing, which reflects the thinking time of writing.
+Their names are self-explanatory.
+%The \textit{word\_time\_ratio} is the ratio of the \textit{word\_count} and the whole time of writing, which reflects the speed of writing.
+%The \textit{word\_event\_ratio} is the ratio of the \textit{word\_count} and the total number of \activity, which reflects the efficiency of writing.
+%The \textit{event\_time\_ratio} is the ratio of the total number of \activity and the whole time of writing, which reflects the frequency of operation.
+%The \textit{idle\_time\_ratio} is the ratio of the \textit{sum\_pause\_time} and the whole time of writing, which reflects the thinking time of writing.
 Based on the concept of writing skill, all these variables should be positively correlated with the quality of writing, which also shown by the linear regression model result (Table~\ref{tab:regression-coefficients}).
 \begin{table}[ht]
     \centering
@@ -239,7 +245,8 @@ Next, although the \textit{essay\_text} contains a lot of information about the 
 Therefore, we need to switch it into some variables that can be used in the model.
 Same as the ratio part, the mainly idea is to create some variables based on the general criteria for judging the quality of writing.
 Therefore, we designed an algorithm to get \textit{mean\_sentence\_length}, \textit{variance\_sentence\_length}, \textit{num\_of\_sentence}, \textit{mean\_word\_length},\textit{variance\_word\_length}, \textit{num\_of\_words}, and \textit{num\_of\_paragraphs}.
-Their names are self-explanatory, which are the mean, variance, and total number of the length of sentence, the length of word, and the number of sentence and paragraph.
+Their names are self-explanatory.
+%which are the mean, variance, and total number of the length of sentence, the length of word, and the number of sentence and paragraph.
 Based on the linear regression model result (Table~\ref{tab:regression-coefficients-2}), the correlation between these variables and the quality of writing has shown.
 
 
