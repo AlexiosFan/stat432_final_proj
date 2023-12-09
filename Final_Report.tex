@@ -364,14 +364,16 @@ Based on the \hyperref[fig:RF_PCA_and_UMAP]{PCA+UMAP}, we can see that the data 
 
 \section{Unsupervised Learning}
 
+\paragraph{Data Selection:}
+ For the clustering process, we chose the PCA-processed data. This decision was driven by the need to address the curse of dimensionality. Through PCA, the features are reduced to a set of linearly uncorrelated components, improving the quality of the clustering. 
+ 
 \subsection{Clustering Algorithm 1: K-Means Clustering}
-K-Means clustering was selected for its efficiency and effectiveness in identifying distinct groupings within large datasets. As a partitioning algorithm, it works well for datasets where the clusters are roughly spherical and of similar size. 
+K-Means clustering was selected for its efficiency and effectiveness in identifying distinct groupings within large datasets. 
 The process of applying K-Means clustering to our dataset involved several key steps:
 
 \begin{enumerate}
-    \item \textbf{Data Selection and Dimensionality Reduction:} For the clustering process, we specifically chose the PCA-processed data. This decision was driven by the need to address the curse of dimensionality, which can adversely impact the performance of K-Means clustering. Through PCA, the features are reduced to a set of linearly uncorrelated components, which offers a more concise and insightful depiction of the initial data. This transformation not only increases computational efficiency but also improves the quality of the clustering. 
     
-    \item \textbf{Choosing the Number of Clusters:} The optimal number of clusters was determined using the elbow method. This involved plotting the total within-cluster sum of squares (WSS) against a range of cluster numbers and looking for a cutting-off point in the plot. The elbow point, where the rate of decrease in WSS with respect to the number of clusters sharply changes, suggests an appropriate number of clusters for the data. Based on the \hyperref[fig:silhouette_analysis]{text}elbow plot, shown in the figure below, we selected k = 8 as it appeared to be the point where the WSS starts to diminish at a slower rate, suggesting a reasonable trade-off between the number of clusters and the variance explained.
+    \item \textbf{Choosing the Number of Clusters:} The optimal number of clusters was determined using the elbow method, which involved plotting the total within-cluster sum of squares (WSS) against a range of cluster numbers and looking for a cutting-off point in the plot. The elbow point, where the rate of decrease in WSS with respect to the number of clusters sharply changes, suggests an appropriate number of clusters for the data. Based on the elbow plot, shown in the figure below, we selected k = 8 as it appeared to be the point where the WSS starts to diminish at a slower rate, suggesting a reasonable trade-off between the number of clusters and the variance explained.
 
 \begin{figure}[H]
     \centering
@@ -379,25 +381,17 @@ The process of applying K-Means clustering to our dataset involved several key s
     \caption{Elbow Method Plot for Determining Optimal Number of Clusters}
     \label{fig:elbow_plot}
 \end{figure}
-    \item \textbf{Running K-Means Clustering:} With the optimal number of clusters (k = 8) determined, we proceeded to apply the K-Means clustering algorithm to our PCA-processed data. 
-
-The final cluster assignments represented groupings of essays with similar characteristics as identified by the K-Means algorithm. 
+    \item \textbf{Running K-Means Clustering:} With the optimal number of clusters \(k = 8\) determined, we proceeded to apply the K-Means clustering algorithm to our PCA-processed data. The final cluster assignments represented groupings of essays with similar characteristics as identified by the K-Means algorithm. 
     
-    \item \textbf{Analyzing the Clusters:} After forming the clusters, their characteristics were analyzed. This included examining the average essay scores within each cluster, which provided insights into potential patterns or groupings in the essay scoring data.
+    \item \textbf{Analyzing the Clusters:} After forming the clusters, we analyzed their characteristics. This included examining the average essay scores within each cluster, which provided insights into potential patterns in the essay scoring data.
 \end{enumerate}
 
-The results of K-Means clustering were expected to reveal natural groupings within the essays that could correlate with their scoring. These insights were intended to inform and enhance the development of subsequent supervised learning models.
+The results of K-Means clustering were expected to reveal natural groupings within the essays that could correlate with their scoring. These insights were intended to inform and enhance the development of following supervised learning models.
 \subsection{Clustering Algorithm 2: Hierarchical Clustering}
-In addition to K-Means, Hierarchical Clustering was applied as a complementary approach. This method is particularly useful for identifying the hierarchical relationships between data points and does not require pre-specification of the number of clusters. 
+In addition to K-Means, we also applied the Hierarchical Clustering. This method is particularly useful for identifying the hierarchical relationships between data points. 
 
 \begin{enumerate}
-    \item \textbf{Creating a Distance Matrix:} The first step involved calculating a distance matrix that represented the distances between each pair of points in our PCA-processed data. We used the Euclidean distance metric, which is a common choice for hierarchical clustering.
-
-    \item \textbf{Building the Hierarchical Structure:} Using this distance matrix, a hierarchical clustering tree (dendrogram) was constructed. This was achieved using an agglomerative approach, where each data point initially represented a single-cluster, and pairs of clusters were merged as one moves up the hierarchy.
-
-    \item \textbf{Merging Clusters:} In each successive iteration, the two nearest clusters were combined into a single cluster. The ‘nearest’ clusters were those with the smallest distance between them, which could be computed in various ways such as single linkage (minimum distance), complete linkage (maximum distance), or average linkage (average distance).
-
-    \item \textbf{Creating the Dendrogram:} The process of merging continued iteratively, and at each step, the hierarchical clustering tree was updated. This tree, or dendrogram, visually represents the cluster formations and their respective proximities.
+    \item \textbf{Hierarchical Clustering Process:} The first step in the hierarchical clustering process was to create a distance matrix from the PCA-processed data, representing the distances between each pair of points using the Euclidean metric. An agglomerative approach was then employed to build the hierarchical structure known as a dendrogram. Initially treating each data point as a single cluster, the algorithm merged the two nearest clusters in successive iterations, determined by the smallest distance between them. To calculate these distances, a number of linkage techniques were taken into consideration, including single, complete, and average linkage. This merging process was iteratively continued, updating the dendrogram at each step to visually represent the formation of clusters and their relationships.
 
     \item \textbf{Determining the Number of Clusters:} To decide the number of clusters to retain, we examined the dendrogram and identified a level where the tree could be ‘cut’ to yield a meaningful clustering. It is difficult to determine the appropriate number of clusters \( k \) based on our dendrogram( \hyperref[fig:silhouette_analysis]{figure~\ref*{fig:silhouette_analysis}}), we introduce the Silhouette Analysis here.
 \end{enumerate}
@@ -408,20 +402,8 @@ In addition to K-Means, Hierarchical Clustering was applied as a complementary a
 %    \label{fig:hierarchical_dendrogram}
 %\end{figure}
 \paragraph{Determining Optimal Clusters with Silhouette Analysis}
-We utilized silhouette analysis to objectively determine the optimal number of clusters \( k \). The silhouette method measures how similar an object is to its own cluster compared to other clusters. The silhouette score ranges from -1 to 1, where a high value indicates that the object is well matched to its own cluster and poorly matched to neighboring clusters.
-
-The following steps were taken to implement silhouette analysis:
-
-\begin{enumerate}
-    \item \textbf{Computing Silhouette Scores:} For each value of \( k \), we computed the average silhouette score for all points. This was done using the \texttt{silhouette} function from the \texttt{cluster} package in R.
-    
-    \item \textbf{Iterating Over Various \( k \) Values:} We iterated over a range of \( k \) values and calculated the silhouette score for each. Typically, the range starts from 2 to an upper limit that makes sense for the dataset.
-    
-    \item \textbf{Selecting \( k \) with the Highest Score:} The optimal number of clusters \( k \) is the one that maximizes the average silhouette score. This indicates a structure where clusters are well separated and cohesive.
-    
-    \item \textbf{Visualizing the Results:} The silhouette scores for different \( k \) values were plotted, facilitating the selection of the number of clusters where the silhouette score starts to diminish.
-\end{enumerate}
-
+We utilized silhouette analysis to determine the optimal number of clusters \( k \). The silhouette method measures how similar an object is to its own cluster compared to other clusters. The silhouette score ranges from -1 to 1, where a high value indicates that the object is well matched to its own cluster and poorly matched to neighboring clusters.
+The optimal number of clusters \( k \) is the one that maximizes the average silhouette score, which indicates a structure where clusters are well separated and cohesive.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.3\textwidth]{unsupervised_figures/elbow_method_pca.png}
@@ -487,16 +469,16 @@ The clustering algorithms provided insights into the natural groupings within th
 \end{table}
 
 \subsubsection{Association with Outcome Variable}
-The association between the clustering results and the outcome variable—in this case, the essay score—was evaluated. Using the K-Means and Hierarchical Clustering methods, it was possible to identify patterns that were related to the essay scores. There was a stratification effect visible in the mean scores within the clusters, with certain clusters having higher or lower essay scores. This implies that the clusters might be capturing underlying characteristics that are important for figuring out an essay's grade.
+The association between the clustering results and the outcome variable—in this case, the essay score—was evaluated. Using the K-Means and the Hierarchical Clustering methods, it was possible to identify patterns that were related to the essay scores. There was a stratification effect visible in the mean scores within the clusters, with certain clusters having higher or lower essay scores. This implies that the clusters might be capturing underlying characteristics that are important for figuring out an essay's grade.
 
 \subsubsection{Insights from Clustering Results}
 The clustering results provide important information into the data structure and the relationships between different essays. Essays that belong to the same cluster, for example, may have similar topics, writing styles, or other latent characteristics that are important in the scoring process but are not measured directly. For the supervised learning models, these discoveries may direct future feature engineering and data preprocessing procedures.
 
 \subsubsection{Utility for Supervised Model}
-The clusters identified could be useful in enhancing the predictive power of the supervised models. By integrating cluster assignments as new features, the model can leverage the information about the groupings that emerged from the unsupervised learning phase. For example, the centroid of a cluster or the distance of an essay from the centroid could be a valuable predictor that captures the essence of each group. Moreover, understanding cluster characteristics can help in formulating new hypotheses about the scoring process and tailoring the models to better fit the complexity of the dataset.
+The clusters identified could be useful in enhancing the predictive ability of the supervised models. By integrating cluster assignments as new features, the model can make use of the information about the groupings that emerged from the unsupervised learning phase. For example, the centroid of a cluster or the distance of an essay from the centroid could be a valuable predictor that captures the essence of each group. Moreover, understanding cluster characteristics can help in formulating new hypotheses about the scoring process and tailoring the models to better fit the complexity of the dataset.
 
 \subsection{Conclusion}
-The clustering results are indeed associated with the outcome variable, providing a non-trivial partitioning of the data that reflects the scoring pattern. By revealing the intrinsic structure within the essays, the unsupervised learning approach not only aids in understanding the dataset better but also offers a strategic direction for improving supervised learning algorithms. The use of cluster-based features could potentially increase the accuracy and interpretability of the predictive models.
+The clustering results are indeed associated with the outcome variable, providing a non-trivial partitioning of the data that reflects the scoring pattern. This step helps to better understand the dataset by exposing the underlying structure of the essays. It also provides a direction for improving supervised learning algorithms. The use of cluster-based features could potentially increase the accuracy and interpretability of the predictive models.
 
 
 
